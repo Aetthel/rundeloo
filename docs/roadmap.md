@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-11-11.
+Last updated: 2026-11-16.
 
 The project follows an 8-phase methodology. One phase at a time; a phase is not left until it is closed.
 
@@ -24,8 +24,8 @@ Target launch (not final): realistic **2026-12-15** · optimistic 2026-11-20 · 
 3. ~~Folder structure~~ Done (2026-11-09). Includes `CLAUDE.md`, `docs/` and the Claude Code setup in `.claude/` (rules, skills, hooks, reviewer agent, settings).
 4. ~~Design system in code~~ Done (2026-11-11) on `feat/design-system`: shadcn/ui, tokens in `globals.css`, light and dark themes. See `docs/design.md`.
 5. ~~Supabase connection for Next.js 16~~ Done (2026-11-11) on `chore/supabase-connection`: reviewed `proxy.ts` and the three clients, onboarding redirect, code translated to English, Prettier and Vitest.
-6. **i18n base** — next. Option B, no locale in the URL. See `docs/architecture.md`.
-7. Migration: install the Supabase CLI as a dev dependency, version the current schema in `supabase/migrations/` (needs Docker Desktop running) and add `notes.pinned_at`, `applications.deadline`, `application_status_history`, `profiles.timezone`, and drop the `profiles.theme` default. See `docs/database.md`.
+6. ~~i18n base~~ Done (2026-11-16) on `feat/i18n-base`: `next-intl` without locale routing, locale synced from `profiles.language` in the proxy, typed messages and enum labels. The visual language switcher ships with the screens (task 9).
+7. **Migration** — next: install the Supabase CLI as a dev dependency, version the current schema in `supabase/migrations/` (needs Docker Desktop running) and add `notes.pinned_at`, `applications.deadline`, `application_status_history`, `profiles.timezone`, and drop the `profiles.theme` default. See `docs/database.md`.
 8. Authentication and route protection.
 9. Core screens from the wireframes (`docs/screens.md`), plus `/privacy` and `/terms`. Logo from `public/brand/`, mobile bottom bar.
 10. **Written spec of the AI onboarding — mandatory before coding it.** Topics already known: experience, what the user is looking for, sector. May add `profiles` columns in a second migration.

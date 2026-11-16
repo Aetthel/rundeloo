@@ -1,1 +1,102 @@
-{}
+{
+  "metadata": {
+    "title": "Rundeloo",
+    "description": "Organize your developer job search: applications, interview prep, companies and notes in one place."
+  },
+  "common": {
+    "appName": "Rundeloo",
+    "language": "Language",
+    "languages": {
+      "en": "English",
+      "es": "Spanish"
+    },
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading…"
+  },
+  "enums": {
+    "applicationStatus": {
+      "saved": "Saved",
+      "applied": "Applied",
+      "interview": "Interviewing",
+      "offer": "Offer",
+      "rejected": "Rejected",
+      "on_hold": "On hold"
+    },
+    "workMode": {
+      "remote": "Remote",
+      "hybrid": "Hybrid",
+      "onsite": "On-site"
+    },
+    "interviewType": {
+      "technical": "Technical",
+      "behavioral": "Behavioral",
+      "system_design": "System design",
+      "hr": "HR"
+    },
+    "interviewFormat": {
+      "video": "Video call",
+      "onsite": "On-site",
+      "phone": "Phone"
+    },
+    "interviewStatus": {
+      "scheduled": "Scheduled",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "contactRole": {
+      "recruiter": "Recruiter",
+      "referral": "Referral",
+      "interviewer": "Interviewer",
+      "other": "Other"
+    },
+    "difficultyLevel": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "questionType": {
+      "technical": "Technical",
+      "behavioral": "Behavioral",
+      "system_design": "System design"
+    },
+    "resourceType": {
+      "article": "Article",
+      "video": "Video",
+      "course": "Course",
+      "docs": "Docs",
+      "other": "Other"
+    },
+    "studyStatus": {
+      "pending": "To do",
+      "in_progress": "In progress",
+      "done": "Done"
+    },
+    "seniorityLevel": {
+      "junior": "Junior",
+      "mid": "Mid"
+    },
+    "searchType": {
+      "local": "Local",
+      "remote": "Remote",
+      "international": "International"
+    },
+    "prepDetailLevel": {
+      "basic": "Basic",
+      "detailed": "Detailed"
+    },
+    "subscriptionPlan": {
+      "free": "Free",
+      "premium": "Pro"
+    },
+    "subscriptionStatus": {
+      "active": "Active",
+      "past_due": "Past due",
+      "canceled": "Canceled"
+    },
+    "themeMode": {
+      "light": "Light",
+      "dark": "Dark"
+    }
+  }
+}
