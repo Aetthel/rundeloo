@@ -1,1 +1,102 @@
-{}
+{
+  "metadata": {
+    "title": "Rundeloo",
+    "description": "Organiza tu búsqueda de empleo como developer: candidaturas, preparación de entrevistas, empresas y notas en un solo lugar."
+  },
+  "common": {
+    "appName": "Rundeloo",
+    "language": "Idioma",
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    },
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando…"
+  },
+  "enums": {
+    "applicationStatus": {
+      "saved": "Guardada",
+      "applied": "Enviada",
+      "interview": "En entrevistas",
+      "offer": "Oferta",
+      "rejected": "Descartada",
+      "on_hold": "En pausa"
+    },
+    "workMode": {
+      "remote": "Remoto",
+      "hybrid": "Híbrido",
+      "onsite": "Presencial"
+    },
+    "interviewType": {
+      "technical": "Técnica",
+      "behavioral": "Conductual",
+      "system_design": "Diseño de sistemas",
+      "hr": "RR. HH."
+    },
+    "interviewFormat": {
+      "video": "Videollamada",
+      "onsite": "Presencial",
+      "phone": "Teléfono"
+    },
+    "interviewStatus": {
+      "scheduled": "Programada",
+      "done": "Hecha",
+      "cancelled": "Cancelada"
+    },
+    "contactRole": {
+      "recruiter": "Recruiter",
+      "referral": "Referido",
+      "interviewer": "Entrevistador",
+      "other": "Otro"
+    },
+    "difficultyLevel": {
+      "easy": "Fácil",
+      "medium": "Media",
+      "hard": "Difícil"
+    },
+    "questionType": {
+      "technical": "Técnica",
+      "behavioral": "Conductual",
+      "system_design": "Diseño de sistemas"
+    },
+    "resourceType": {
+      "article": "Artículo",
+      "video": "Vídeo",
+      "course": "Curso",
+      "docs": "Documentación",
+      "other": "Otro"
+    },
+    "studyStatus": {
+      "pending": "Pendiente",
+      "in_progress": "En curso",
+      "done": "Hecho"
+    },
+    "seniorityLevel": {
+      "junior": "Junior",
+      "mid": "Mid"
+    },
+    "searchType": {
+      "local": "Local",
+      "remote": "Remoto",
+      "international": "Internacional"
+    },
+    "prepDetailLevel": {
+      "basic": "Básico",
+      "detailed": "Detallado"
+    },
+    "subscriptionPlan": {
+      "free": "Gratis",
+      "premium": "Pro"
+    },
+    "subscriptionStatus": {
+      "active": "Activa",
+      "past_due": "Pago pendiente",
+      "canceled": "Cancelada"
+    },
+    "themeMode": {
+      "light": "Claro",
+      "dark": "Oscuro"
+    }
+  }
+}

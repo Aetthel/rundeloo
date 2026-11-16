@@ -58,6 +58,12 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - The Pro **locked** color is **Slate in light and Mist in dark** (was Mist in both). Mist on white is 2.6:1 and fails WCAG AA for text.
 - `cn()` uses **`clsx` + `tailwind-merge`**, not the `cn` package that `shadcn init` installs (0.x, released days before). Check imports after every `shadcn add`.
 
+## i18n base (2026-11-16)
+
+- **`next-intl`** (without its locale routing) for translations, ICU plurals and date/number formatting. Message keys are typed from `en.json`, the source of truth.
+- **`src/proxy.ts` mirrors `profiles.language` into the `NEXT_LOCALE` cookie**, using the profile query it already makes. `src/i18n/request.ts` reads only cookie → `Accept-Language`, never the database. Any code that changes `profiles.language` must also set the cookie (see `setLocale`).
+- **The root layout renders `<html>` inside `<Suspense>`**, because the locale comes from cookies and Cache Components forbids that outside a boundary. Consequence of option B: pages that were static are now dynamic, the landing included. Revisit before launch if landing performance or SEO suffers.
+
 ## Context review (2026-11-11)
 
 - **Zero running cost.** The only expense is the domain. Every service (hosting, AI, email, database) must fit a free tier that allows a commercial product. Stripe's per-payment fee is accepted.

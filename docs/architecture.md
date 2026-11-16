@@ -108,6 +108,22 @@ profiles.language → cookie → Accept-Language → "en"
 - User content (notes, companies…) is never translated.
 - All UI strings live in `src/messages/{en,es}.json`. Enum values are mapped to labels, never rendered raw (`interview` → "Interviewing").
 
+Implementation (`next-intl`, no locale routing):
+
+| File | Role |
+|---|---|
+| `src/i18n/config.ts` | Supported locales, default, cookie name, `isLocale()` |
+| `src/i18n/resolve-locale.ts` | Pure priority rules and `Accept-Language` parsing (unit tested) |
+| `src/i18n/request.ts` | next-intl request config: cookie → header → `en`, loads the messages |
+| `src/lib/supabase/proxy.ts` | Copies `profiles.language` into the cookie when they differ |
+| `src/server/i18n/actions.ts` | `setLocale` Server Action: cookie, plus `profiles.language` when signed in |
+| `src/types/next-intl.d.ts` | Types message keys from `en.json` |
+
+- Server Components: `getTranslations("namespace")`. Client components: `useTranslations()`. Dates and numbers: `getFormatter()` / `useFormatter()`, never `toLocaleString()` by hand.
+- Enum labels: `t(\`enums.applicationStatus.${status}\`)`. Namespaces under `enums` are the enum name in camelCase; keys are the raw values.
+- `src/messages/messages.test.ts` fails if `es.json` misses a key from `en.json` or has an empty value.
+- The root layout renders `<html>` inside `<Suspense>` (Cache Components), so every page renders on request.
+
 ## AI
 
 - **Provider layer:** every AI feature (onboarding, simulator, study path, weekly summary, link suggestions) calls an interface in `src/server/ai/`, never a vendor SDK directly. The provider is picked by configuration: **Ollama in development**, production provider chosen in Phase 7 (it must be free). Prompts live in `src/server/ai/prompts/`, in English. The model answers in the user's `profiles.language`.
