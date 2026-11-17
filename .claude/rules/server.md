@@ -16,6 +16,6 @@ paths:
 - Return typed results (`{ ok: true, data } | { ok: false, error }`), never throw raw Supabase errors to the client.
 - Supabase clients: `server.ts` for user requests (RLS applies), `admin.ts` **only** for the Stripe webhook, cron jobs and `question_bank` writes. Never import `admin.ts` anywhere else.
 - Never trust ownership from the client: RLS plus the user's session decide what is visible.
-- Changing `applications.status` also updates `status_changed_at` (and inserts into `application_status_history` once it exists).
+- Changing `applications.status` also updates `status_changed_at`. Never insert into `application_status_history`: a database trigger does it.
 - AI calls live in `src/server/ai/`. Prompts in `src/server/ai/prompts/`. The model answers in the user's `profiles.language`.
 - Use types from `src/types/database.ts`. No `any`.
