@@ -27,7 +27,7 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - `embedding` is **`vector(1024)`**. The embedding model must output 1024 dimensions (candidate: Ollama `mxbai-embed-large`; Voyage AI was the earlier choice). Changing the model means re-embedding everything.
 - `on delete cascade` in the business chain, `set null` for note anchors and simulations.
 - **Pipeline order needs an explicit priority map** (offer, interview, applied, saved, on_hold, rejected). Never `ORDER BY status`: it silently sorts by enum creation order.
-- New columns: `notes.pinned_at timestamptz` and `applications.deadline date` (both nullable). `application_status_history` to be added before launch.
+- New columns: `notes.pinned_at timestamptz` and `applications.deadline date` (both nullable). `application_status_history` added in task 7 (see "Schema migration").
 
 ## Stack and code
 
@@ -52,6 +52,12 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - Claude Code has **read-only access to Supabase and Figma** in this repo; write tools are denied in `.claude/settings.json`. It cannot run SQL against the remote project, so it sees the schema but not row data.
 - **Only Alex runs migrations and remote changes.** Claude prepares the file in `supabase/migrations/`.
 - All Claude Code configuration lives in `.claude/`, with `CLAUDE.md` at the repo root.
+
+## Schema migration (2026-11-17)
+
+- **`application_status_history` is written by a database trigger** (`SECURITY DEFINER`), not by Server Actions: no code path can skip it. Users have `SELECT` only, so history can't be forged or edited. No `updated_at`: rows are immutable.
+- **Backfilled** with one row per existing application (current status, `changed_at = coalesce(status_changed_at, created_at)`).
+- **Baseline from `db dump`, not `db pull`:** `db pull` writes the remote migration history. Remote writes (`migration repair`, `db push`) are always run by Alex, with `--remote`.
 
 ## Design system (2026-11-11)
 

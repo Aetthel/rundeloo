@@ -1,14 +1,15 @@
 # Database
 
-Supabase project `rundeloo`, region `eu-central-1`, Postgres 17 with pgvector. Schema closed on 2026-10-14 and checked against the live database on 2026-11-09.
+Supabase project `rundeloo`, region `eu-central-1`, Postgres 17 with pgvector. Schema closed on 2026-10-14, checked against the live database on 2026-11-09 and versioned in `supabase/migrations/` since 2026-11-16.
 
 **Never change the remote schema directly.** Schema changes are SQL migrations in `supabase/migrations/`, reviewed by Alex before they run.
 
 ## Global rules
 
-- 17 tables, 21 enums, RLS enabled on every table (18 policies), `updated_at` trigger on all tables.
+- 18 tables, 21 enums, RLS enabled on every table (19 policies), `updated_at` trigger on all tables except the immutable `application_status_history`.
 - Sign-up trigger creates the rows in `users`, `profiles` and `subscriptions`.
-- "Automatically expose new tables" is **off**. Grants are given by hand with `GRANT`. Role `anon` has no access to any table. **A new table needs its RLS policies and grants in the same migration.**
+- "Automatically expose new tables" is **off**. Grants are given by hand with `GRANT`. Role `anon` has no data access to any table. **A new table needs its RLS policies and grants in the same migration.**
+- Known gap: Supabase's default privileges still give `anon` and `authenticated` `REFERENCES, TRIGGER, TRUNCATE, MAINTAIN` on every table. Not reachable through the API, but new tables revoke them (see `application_status_history`); the existing ones are reviewed in task 8.
 - Dates with time are `timestamptz`, never `timestamp`.
 - Only `companies`, `notes` and the user-level Pro tables carry `user_id`. The rest resolve ownership through the foreign-key chain (RLS joins up to `companies.user_id`).
 - Read-only for the client: `subscriptions`, `weekly_summaries`, `question_bank`. Written by the server with the admin client.
@@ -28,6 +29,7 @@ users ─┬─ profiles
              ├─ contacts ── contact_reminders
              ├─ study_resources
              └─ applications
+                   ├─ application_status_history
                    ├─ interviews ── checklist_items
                    ├─ alerts
                    └─ study_paths
@@ -39,17 +41,18 @@ question_bank (global, no owner)
 | Table | Columns |
 |---|---|
 | users | id, email, auth_provider?, last_login_at?, created_at, updated_at |
-| profiles | id, user_id, full_name?, target_role?, seniority (seniority_level)?, search_type?, target_location?, initial_active_processes (int)?, prep_detail_level?, onboarding_completed (bool), theme (theme_mode)?, language (text)?, created_at, updated_at |
+| profiles | id, user_id, full_name?, target_role?, seniority (seniority_level)?, search_type?, target_location?, initial_active_processes (int)?, prep_detail_level?, onboarding_completed (bool), theme (theme_mode, no default)?, language (text)?, timezone (text, IANA)?, created_at, updated_at |
 | subscriptions | id, user_id, plan (subscription_plan), status (subscription_status), stripe_customer_id?, stripe_subscription_id?, current_period_end?, cancel_at_period_end (bool), created_at, updated_at |
 | companies | id, user_id, name, website?, industry?, location?, notes?, created_at, updated_at |
-| applications | id, company_id, role_title, status (application_status), applied_at (date)?, first_response_at?, status_changed_at?, job_url?, work_mode?, notes?, created_at, updated_at |
+| applications | id, company_id, role_title, status (application_status), applied_at (date)?, first_response_at?, status_changed_at?, job_url?, work_mode?, notes?, deadline (date)?, created_at, updated_at |
+| application_status_history | id, application_id, from_status (application_status)?, to_status (application_status), changed_at |
 | contacts | id, company_id, full_name, contact_role?, email?, phone?, linkedin_url?, notes?, created_at, updated_at |
 | contact_reminders | id, contact_id, remind_at, message?, status (reminder_status), sent_at?, created_at, updated_at |
 | study_resources | id, company_id, title, url?, resource_type?, topic?, study_status, notes?, created_at, updated_at |
 | interviews | id, application_id, interview_type?, format (interview_format)?, scheduled_at?, interviewer_name?, status (interview_status), questions_asked?, my_answers?, improvements?, created_at, updated_at |
 | checklist_items | id, interview_id, label, is_completed, position (int), generated_by_ai, created_at, updated_at |
 | alerts | id, application_id, alert_type, message, due_at?, status (alert_status), created_at, updated_at |
-| notes | id, user_id, company_id?, application_id?, interview_id?, title?, content (jsonb, TipTap)?, embedding (vector 1024)?, generated_by_ai, created_at, updated_at |
+| notes | id, user_id, company_id?, application_id?, interview_id?, title?, content (jsonb, TipTap)?, embedding (vector 1024)?, generated_by_ai, pinned_at?, created_at, updated_at |
 | note_links | id, source_note_id, target_note_id, link_status, similarity_score (float)?, reason?, created_at, updated_at |
 | question_bank | id, question, question_type, topic?, difficulty (difficulty_level)?, answer_hint?, created_at, updated_at |
 | study_paths | id, application_id, title?, items (jsonb)?, progress_percent (int), generated_at?, created_at, updated_at |
@@ -90,32 +93,31 @@ question_bank (global, no owner)
 - `interview_simulations` links to an **application**, not an interview. There is no difficulty column.
 - `study_resources` belong to a **company**, not an application.
 - `subscription_plan` value is `premium`; the UI label is "Pro".
-- When an application's status changes, update `status_changed_at` (and insert into `application_status_history` once it exists).
+- When an application's status changes, update `status_changed_at`. The trigger `record_status_change` writes `application_status_history` by itself (on insert and on every real status change); users can only read it.
 - Derived values, not columns: "Next step", "Best stage", app/contact counts, "Last activity", calendar events.
 - Calendar has no events table. It shows `interviews.scheduled_at`, `applications.deadline`, `alerts.due_at` and (Pro) `contact_reminders.remind_at`.
 - Alert snooze = update `due_at`; dismiss = `status = dismissed`.
 
-## Pending migration (Phase 6)
+## Migrations
 
-1. Baseline: dump the current schema into `supabase/migrations/` (the CLI may need Docker Desktop).
-2. `notes.pinned_at timestamptz null` — sorts pinned notes; max 3 pinned, validated in the server.
-3. `applications.deadline date null` — powers the Deadlines metric and calendar.
-4. `application_status_history` — recommended before launch: history can't be recovered later. Feeds the Activity card.
-5. `profiles.timezone text null` — IANA time zone name, detected from the browser on sign-up. Drives "today", weeks, the calendar and the weekly summary schedule.
-6. `profiles.theme` — drop the `'light'` default. Null means "follow the device".
+| File | Content |
+|---|---|
+| `20261116170000_baseline.sql` | Schema as it was on 2026-11-16 (`db dump --schema public`), plus the `vector` extension and the `on_auth_user_created` trigger added by hand |
+| `20261116180000_phase6_schema_changes.sql` | `notes.pinned_at`, `applications.deadline`, `profiles.timezone`, no `profiles.theme` default, `application_status_history` with its trigger and backfill |
 
-Already present, no change needed: `profiles.onboarding_completed`, `profiles.language`.
+Workflow: Claude writes the file and tests it on the local stack (`npx supabase start`, Docker). Alex applies it with `npx supabase db push --dry-run --remote`, then `npx supabase db push --remote`. CLI v3 targets the **local** database unless `--remote` is passed. Types: `npx supabase gen types typescript --remote --schema public > src/types/database.ts` (the local generator drops `PostgrestVersion`).
+
+The `rls_auto_enable` event trigger exists on the hosted project but is not in the baseline: migrations enable RLS explicitly.
 
 Possibly later (task 10, onboarding spec): sector and years of experience in `profiles`, in a separate migration.
 
 ## Parked for Phase 8
 
-1. `application_status_history` (moved forward to Phase 6, see above).
-2. Context consistency of notes (anchors pointing to unrelated entities).
-3. `note_links` constraints: source ≠ target, ordered pair uniqueness.
-4. Integrity of `study_paths.items` (jsonb shape).
-5. `users.email` vs Supabase Auth (editable email in the mirror table).
-6. Redundant `user_id` on child tables to simplify RLS.
+1. Context consistency of notes (anchors pointing to unrelated entities).
+2. `note_links` constraints: source ≠ target, ordered pair uniqueness.
+3. Integrity of `study_paths.items` (jsonb shape).
+4. `users.email` vs Supabase Auth (editable email in the mirror table).
+5. Redundant `user_id` on child tables to simplify RLS.
 
 ## Decisions to make in code
 

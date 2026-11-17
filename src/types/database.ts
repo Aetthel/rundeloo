@@ -55,11 +55,44 @@ export type Database = {
           },
         ]
       }
+      application_status_history: {
+        Row: {
+          application_id: string
+          changed_at: string
+          from_status: Database["public"]["Enums"]["application_status"] | null
+          id: string
+          to_status: Database["public"]["Enums"]["application_status"]
+        }
+        Insert: {
+          application_id: string
+          changed_at?: string
+          from_status?: Database["public"]["Enums"]["application_status"] | null
+          id?: string
+          to_status: Database["public"]["Enums"]["application_status"]
+        }
+        Update: {
+          application_id?: string
+          changed_at?: string
+          from_status?: Database["public"]["Enums"]["application_status"] | null
+          id?: string
+          to_status?: Database["public"]["Enums"]["application_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_status_history_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       applications: {
         Row: {
           applied_at: string | null
           company_id: string
           created_at: string
+          deadline: string | null
           first_response_at: string | null
           id: string
           job_url: string | null
@@ -74,6 +107,7 @@ export type Database = {
           applied_at?: string | null
           company_id: string
           created_at?: string
+          deadline?: string | null
           first_response_at?: string | null
           id?: string
           job_url?: string | null
@@ -88,6 +122,7 @@ export type Database = {
           applied_at?: string | null
           company_id?: string
           created_at?: string
+          deadline?: string | null
           first_response_at?: string | null
           id?: string
           job_url?: string | null
@@ -452,6 +487,7 @@ export type Database = {
           generated_by_ai: boolean
           id: string
           interview_id: string | null
+          pinned_at: string | null
           title: string | null
           updated_at: string
           user_id: string
@@ -465,6 +501,7 @@ export type Database = {
           generated_by_ai?: boolean
           id?: string
           interview_id?: string | null
+          pinned_at?: string | null
           title?: string | null
           updated_at?: string
           user_id: string
@@ -478,6 +515,7 @@ export type Database = {
           generated_by_ai?: boolean
           id?: string
           interview_id?: string | null
+          pinned_at?: string | null
           title?: string | null
           updated_at?: string
           user_id?: string
@@ -529,6 +567,7 @@ export type Database = {
           target_location: string | null
           target_role: string | null
           theme: Database["public"]["Enums"]["theme_mode"] | null
+          timezone: string | null
           updated_at: string
           user_id: string
         }
@@ -547,6 +586,7 @@ export type Database = {
           target_location?: string | null
           target_role?: string | null
           theme?: Database["public"]["Enums"]["theme_mode"] | null
+          timezone?: string | null
           updated_at?: string
           user_id: string
         }
@@ -565,6 +605,7 @@ export type Database = {
           target_location?: string | null
           target_role?: string | null
           theme?: Database["public"]["Enums"]["theme_mode"] | null
+          timezone?: string | null
           updated_at?: string
           user_id?: string
         }
