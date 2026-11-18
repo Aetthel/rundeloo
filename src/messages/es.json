@@ -129,7 +129,8 @@
       "submit": "Iniciar sesión",
       "pending": "Iniciando sesión…",
       "noAccount": "¿No tienes cuenta?",
-      "signUp": "Regístrate"
+      "signUp": "Regístrate",
+      "legal": "Al continuar, aceptas los <terms>Términos</terms> y la <privacy>Política de privacidad</privacy>."
     },
     "forgot": {
       "title": "Restablece tu contraseña",
@@ -163,6 +164,12 @@
       "sessionExpired": "Tu sesión ha caducado. Pide un enlace nuevo.",
       "authCallback": "Ese enlace no es válido o ha caducado. Pide uno nuevo.",
       "unexpected": "Algo ha fallado. Vuelve a intentarlo."
+    },
+    "social": {
+      "separator": "O continúa con",
+      "google": "Google",
+      "linkedin": "LinkedIn",
+      "comingSoon": "Próximamente"
     }
   }
 }

@@ -59,7 +59,8 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - **Sign-up data travels as user metadata** and `handle_new_user()` stores it after validating it. The metadata is client-controlled: never trust it without that check.
 - **No user enumeration** in sign-up or password reset, and auth errors are mapped to i18n keys.
 - **Email links come from `NEXT_PUBLIC_SITE_URL`**, never from request headers.
-- **Google sign-in is out of v1** although the wireframes show it: email + password only, as decided. Revisit after launch.
+- **Social sign-in (Google or LinkedIn) is pending** (2026-11-18): the login shows both buttons disabled with "Coming soon". Pick one and wire it up in a later task; until then, email + password only.
+- **Login uses the shadcn `login-04` layout** (form + brand panel). The panel shows the white logo on ink until the brand PNG is added.
 - **`security` subagent** (`.claude/agents/security.md`) reviews branches that touch auth, migrations, billing, Route Handlers or AI before the PR.
 
 ## Schema migration (2026-11-17)

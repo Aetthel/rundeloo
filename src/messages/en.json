@@ -129,7 +129,8 @@
       "submit": "Log in",
       "pending": "Logging in…",
       "noAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "signUp": "Sign up",
+      "legal": "By continuing, you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>."
     },
     "forgot": {
       "title": "Reset your password",
@@ -163,6 +164,12 @@
       "sessionExpired": "Your session expired. Request a new link.",
       "authCallback": "That link is invalid or has expired. Request a new one.",
       "unexpected": "Something went wrong. Try again."
+    },
+    "social": {
+      "separator": "Or continue with",
+      "google": "Google",
+      "linkedin": "LinkedIn",
+      "comingSoon": "Coming soon"
     }
   }
 }
