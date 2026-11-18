@@ -98,5 +98,71 @@
       "light": "Light",
       "dark": "Dark"
     }
+  },
+  "auth": {
+    "brand": "Rundeloo",
+    "fields": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Jane Doe",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "passwordHint": "At least 8 characters."
+    },
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Organize your job search in one place.",
+      "submit": "Create account",
+      "pending": "Creating account…",
+      "legal": "By signing up, you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>.",
+      "haveAccount": "Already have an account?",
+      "logIn": "Log in",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "We sent a confirmation link to your inbox. Open it to activate your account."
+    },
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Log in to keep your job search on track.",
+      "forgot": "Forgot password?",
+      "submit": "Log in",
+      "pending": "Logging in…",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a reset link.",
+      "submit": "Send reset link",
+      "pending": "Sending…",
+      "back": "Back to log in",
+      "sentTitle": "Check your email",
+      "sentBody": "If an account exists for that email, you'll get a link to reset your password in a few minutes."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "subtitle": "You'll use it the next time you log in.",
+      "submit": "Update password",
+      "pending": "Updating…"
+    },
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "fullNameRequired": "Enter your name.",
+      "fullNameTooLong": "Use 100 characters or fewer.",
+      "passwordRequired": "Enter your password.",
+      "passwordTooShort": "Use at least 8 characters.",
+      "passwordTooLong": "Use 72 characters or fewer.",
+      "passwordsDontMatch": "Passwords don't match.",
+      "invalidCredentials": "Email or password is incorrect.",
+      "emailNotConfirmed": "Confirm your email first. Check your inbox for the link.",
+      "emailTaken": "An account with this email already exists.",
+      "weakPassword": "Choose a stronger password.",
+      "samePassword": "Choose a password different from the current one.",
+      "rateLimited": "Too many attempts. Wait a few minutes and try again.",
+      "sessionExpired": "Your session expired. Request a new link.",
+      "authCallback": "That link is invalid or has expired. Request a new one.",
+      "unexpected": "Something went wrong. Try again."
+    }
   }
 }

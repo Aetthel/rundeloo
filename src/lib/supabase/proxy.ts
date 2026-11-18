@@ -119,6 +119,10 @@ export async function updateSession(request: NextRequest) {
   const target = request.nextUrl.clone();
   target.pathname = destination;
   target.search = "";
+  // Return to the requested page after signing in. signIn() runs it through safeRedirectPath.
+  if (!user && destination === "/login") {
+    target.searchParams.set("next", pathname + request.nextUrl.search);
+  }
   const redirect = NextResponse.redirect(target);
   // Without this, the cookies of a just-refreshed session would be lost.
   response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));

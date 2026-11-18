@@ -53,6 +53,15 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - **Only Alex runs migrations and remote changes.** Claude prepares the file in `supabase/migrations/`.
 - All Claude Code configuration lives in `.claude/`, with `CLAUDE.md` at the repo root.
 
+## Authentication (2026-11-18)
+
+- **Email confirmation on.** Supabase's built-in SMTP is enough for development; a free production SMTP is chosen in Phase 7.
+- **Sign-up data travels as user metadata** and `handle_new_user()` stores it after validating it. The metadata is client-controlled: never trust it without that check.
+- **No user enumeration** in sign-up or password reset, and auth errors are mapped to i18n keys.
+- **Email links come from `NEXT_PUBLIC_SITE_URL`**, never from request headers.
+- **Google sign-in is out of v1** although the wireframes show it: email + password only, as decided. Revisit after launch.
+- **`security` subagent** (`.claude/agents/security.md`) reviews branches that touch auth, migrations, billing, Route Handlers or AI before the PR.
+
 ## Schema migration (2026-11-17)
 
 - **`application_status_history` is written by a database trigger** (`SECURITY DEFINER`), not by Server Actions: no code path can skip it. Users have `SELECT` only, so history can't be forged or edited. No `updated_at`: rows are immutable.

@@ -7,9 +7,9 @@ Supabase project `rundeloo`, region `eu-central-1`, Postgres 17 with pgvector. S
 ## Global rules
 
 - 18 tables, 21 enums, RLS enabled on every table (19 policies), `updated_at` trigger on all tables except the immutable `application_status_history`.
-- Sign-up trigger creates the rows in `users`, `profiles` and `subscriptions`.
+- Sign-up trigger creates the rows in `users`, `profiles` and `subscriptions`, and copies the validated `full_name`, `language` and `timezone` from the sign-up metadata into `profiles`.
 - "Automatically expose new tables" is **off**. Grants are given by hand with `GRANT`. Role `anon` has no data access to any table. **A new table needs its RLS policies and grants in the same migration.**
-- Known gap: Supabase's default privileges still give `anon` and `authenticated` `REFERENCES, TRIGGER, TRUNCATE, MAINTAIN` on every table. Not reachable through the API, but new tables revoke them (see `application_status_history`); the existing ones are reviewed in task 8.
+- `anon` has no privilege on any table, and `authenticated` has no `REFERENCES`, `TRIGGER`, `TRUNCATE` or `MAINTAIN` (revoked in `auth_hardening`, also for future tables through default privileges).
 - Dates with time are `timestamptz`, never `timestamp`.
 - Only `companies`, `notes` and the user-level Pro tables carry `user_id`. The rest resolve ownership through the foreign-key chain (RLS joins up to `companies.user_id`).
 - Read-only for the client: `subscriptions`, `weekly_summaries`, `question_bank`. Written by the server with the admin client.
@@ -104,6 +104,7 @@ question_bank (global, no owner)
 |---|---|
 | `20261116170000_baseline.sql` | Schema as it was on 2026-11-16 (`db dump --schema public`), plus the `vector` extension and the `on_auth_user_created` trigger added by hand |
 | `20261116180000_phase6_schema_changes.sql` | `notes.pinned_at`, `applications.deadline`, `profiles.timezone`, no `profiles.theme` default, `application_status_history` with its trigger and backfill |
+| `20261118120000_auth_hardening.sql` | `handle_new_user()` reads the sign-up metadata; leftover table privileges revoked from `anon` and `authenticated` |
 
 Workflow: Claude writes the file and tests it on the local stack (`npx supabase start`, Docker). Alex applies it with `npx supabase db push --dry-run --remote`, then `npx supabase db push --remote`. CLI v3 targets the **local** database unless `--remote` is passed. Types: `npx supabase gen types typescript --remote --schema public > src/types/database.ts` (the local generator drops `PostgrestVersion`).
 

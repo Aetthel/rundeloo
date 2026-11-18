@@ -11,7 +11,7 @@ import {
 } from "@/i18n/config";
 import { createClient } from "@/lib/supabase/server";
 import { localeSchema } from "@/lib/validations/locale";
-import { getUser } from "@/server/auth";
+import { getUser } from "@/server/auth/session";
 
 type SetLocaleResult =
   { ok: true; data: Locale } | { ok: false; error: string };
