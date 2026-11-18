@@ -11,7 +11,7 @@ import {
   buildSimulatorSystemPrompt,
   SIMULATOR_START_MESSAGE,
 } from "@/server/ai/prompts/simulator";
-import { getUser } from "@/server/auth";
+import { getUser } from "@/server/auth/session";
 import { hasProAccess } from "@/server/billing";
 
 const fail = (error: string, status: number) =>

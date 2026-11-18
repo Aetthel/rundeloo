@@ -3,7 +3,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { requireUser } from "@/server/auth";
+import { requireUser } from "@/server/auth/session";
 
 /** The plan only counts while the subscription is active. Any error means no access. */
 export async function hasProAccess(userId: string) {

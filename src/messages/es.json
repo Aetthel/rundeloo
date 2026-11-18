@@ -98,5 +98,71 @@
       "light": "Claro",
       "dark": "Oscuro"
     }
+  },
+  "auth": {
+    "brand": "Rundeloo",
+    "fields": {
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Ana García",
+      "email": "Email",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "password": "Contraseña",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Repite la nueva contraseña",
+      "passwordHint": "Mínimo 8 caracteres."
+    },
+    "signUp": {
+      "title": "Crea tu cuenta",
+      "subtitle": "Organiza tu búsqueda de empleo en un solo lugar.",
+      "submit": "Crear cuenta",
+      "pending": "Creando cuenta…",
+      "legal": "Al registrarte, aceptas los <terms>Términos</terms> y la <privacy>Política de privacidad</privacy>.",
+      "haveAccount": "¿Ya tienes cuenta?",
+      "logIn": "Inicia sesión",
+      "checkEmailTitle": "Revisa tu email",
+      "checkEmailBody": "Te hemos enviado un enlace de confirmación. Ábrelo para activar tu cuenta."
+    },
+    "signIn": {
+      "title": "Hola de nuevo",
+      "subtitle": "Inicia sesión para seguir con tu búsqueda.",
+      "forgot": "¿Has olvidado tu contraseña?",
+      "submit": "Iniciar sesión",
+      "pending": "Iniciando sesión…",
+      "noAccount": "¿No tienes cuenta?",
+      "signUp": "Regístrate"
+    },
+    "forgot": {
+      "title": "Restablece tu contraseña",
+      "subtitle": "Escribe tu email y te enviaremos un enlace para restablecerla.",
+      "submit": "Enviar enlace",
+      "pending": "Enviando…",
+      "back": "Volver a iniciar sesión",
+      "sentTitle": "Revisa tu email",
+      "sentBody": "Si existe una cuenta con ese email, recibirás en unos minutos un enlace para restablecer la contraseña."
+    },
+    "reset": {
+      "title": "Elige una nueva contraseña",
+      "subtitle": "La usarás la próxima vez que inicies sesión.",
+      "submit": "Actualizar contraseña",
+      "pending": "Actualizando…"
+    },
+    "errors": {
+      "invalidEmail": "Escribe un email válido.",
+      "fullNameRequired": "Escribe tu nombre.",
+      "fullNameTooLong": "Usa 100 caracteres como máximo.",
+      "passwordRequired": "Escribe tu contraseña.",
+      "passwordTooShort": "Usa al menos 8 caracteres.",
+      "passwordTooLong": "Usa 72 caracteres como máximo.",
+      "passwordsDontMatch": "Las contraseñas no coinciden.",
+      "invalidCredentials": "El email o la contraseña no son correctos.",
+      "emailNotConfirmed": "Confirma primero tu email. Busca el enlace en tu bandeja de entrada.",
+      "emailTaken": "Ya existe una cuenta con este email.",
+      "weakPassword": "Elige una contraseña más segura.",
+      "samePassword": "Elige una contraseña distinta de la actual.",
+      "rateLimited": "Demasiados intentos. Espera unos minutos y vuelve a probar.",
+      "sessionExpired": "Tu sesión ha caducado. Pide un enlace nuevo.",
+      "authCallback": "Ese enlace no es válido o ha caducado. Pide uno nuevo.",
+      "unexpected": "Algo ha fallado. Vuelve a intentarlo."
+    }
   }
 }

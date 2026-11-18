@@ -18,6 +18,11 @@ describe("safeRedirectPath", () => {
     ["protocol-relative", "//evil.com"],
     ["backslash", "/\\evil.com"],
     ["relative", "dashboard"],
+    // Browsers strip tab, CR and LF from URLs, turning these into //evil.com.
+    ["tab-split", "/\t/evil.com"],
+    ["newline-split", "/\n/evil.com"],
+    ["carriage-return-split", "/\r//evil.com"],
+    ["null byte", "/dash\u0000board"],
   ])("falls back to /dashboard for a %s value", (_, value) => {
     expect(safeRedirectPath(value)).toBe("/dashboard");
   });

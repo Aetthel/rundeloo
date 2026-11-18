@@ -86,8 +86,13 @@ Every action validates input with Zod (same schema as the form) and checks owner
 
 ## Auth and routing
 
-- Supabase Auth (email + password). Recovery: `/forgot-password` → email → `/auth/callback` → `/reset-password`.
-- Not signed in + `(app)` route → `/login`.
+- Supabase Auth (email + password), **email confirmation on**. Recovery: `/forgot-password` → email → `/auth/callback` → `/reset-password`.
+- Actions in `src/server/auth/actions.ts` (`signUp`, `signIn`, `signOut`, `requestPasswordReset`, `updatePassword`); session helpers in `src/server/auth/session.ts`; schemas in `src/lib/validations/auth.ts` (password 8–72 characters).
+- Sign-up sends `full_name`, `language` (current locale) and `timezone` (browser) as user metadata. `handle_new_user()` validates them and fills `profiles`, because with email confirmation there is no session yet to write it from the server.
+- No user enumeration: sign-up and password reset show the same confirmation whether the email exists or not. Errors reach the client as i18n keys under `auth.errors`, never as raw Supabase messages.
+- Email links use `getSiteUrl()` (`NEXT_PUBLIC_SITE_URL`, `http://localhost:3000` in development), never the `Host` header. Supabase must allow `<site>/auth/callback` in its redirect URLs.
+- Forms: `useActionState` + Server Action returning `FormState` (`src/lib/form-state.ts`). No form library.
+- Not signed in + `(app)` route → `/login?next=<path>`; after sign-in, `next` goes through `safeRedirectPath`.
 - Signed in + `profiles.onboarding_completed = false` → `/onboarding` (from any protected route or login/register/forgot-password).
 - Signed in + onboarding done + `/login`, `/register`, `/forgot-password` or `/onboarding` → `/dashboard`. `/onboarding/ready` and `/reset-password` stay reachable.
 - If the profile can't be read, onboarding rules are skipped rather than locking the user out.
