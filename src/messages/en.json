@@ -167,10 +167,10 @@
       "unexpected": "Something went wrong. Try again."
     },
     "social": {
-      "separator": "Or continue with",
       "google": "Google",
       "linkedin": "LinkedIn",
-      "comingSoon": "Coming soon"
+      "comingSoon": "Coming soon",
+      "separatorSoon": "Or continue with (coming soon)"
     }
   }
 }

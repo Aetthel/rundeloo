@@ -34,28 +34,28 @@ export function AuthSplitCard({
   const t = useTranslations("auth");
 
   const body = (
-    <FieldGroup>
-      <div className="flex flex-col items-center gap-2 text-center">
+    <FieldGroup className="gap-4">
+      <div className="flex flex-col items-center gap-1 text-center">
         <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="text-balance text-muted-foreground">{subtitle}</p>
+        <p className="text-sm text-balance text-muted-foreground">{subtitle}</p>
       </div>
       {children}
     </FieldGroup>
   );
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="flex justify-center md:hidden">
         <AuthLogo />
       </div>
       <Card className="overflow-hidden p-0 ring-2">
         <CardContent className="grid p-0 md:grid-cols-2">
           {action ? (
-            <form action={action} className="p-6 md:p-8" noValidate>
+            <form action={action} className="p-6 md:px-8" noValidate>
               {body}
             </form>
           ) : (
-            <div className="p-6 md:p-8">{body}</div>
+            <div className="p-6 md:px-8">{body}</div>
           )}
           <BrandPanel />
         </CardContent>

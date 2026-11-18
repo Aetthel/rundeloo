@@ -24,7 +24,7 @@ export function SocialButtons() {
   return (
     <>
       <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-        {t("separator")}
+        {t("separatorSoon")}
       </FieldSeparator>
       <div className="grid grid-cols-2 gap-3">
         {providers.map(({ name, path }) => (
@@ -42,9 +42,6 @@ export function SocialButtons() {
           </Button>
         ))}
       </div>
-      <p className="-mt-3 text-center text-xs text-muted-foreground">
-        {t("comingSoon")}
-      </p>
     </>
   );
 }
