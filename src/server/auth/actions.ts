@@ -31,6 +31,7 @@ export async function signUp(
     fullName: field(formData, "fullName"),
     email: field(formData, "email"),
     password: field(formData, "password"),
+    confirmPassword: field(formData, "confirmPassword"),
     timezone: field(formData, "timezone") || undefined,
   });
   const values = {

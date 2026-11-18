@@ -4,10 +4,16 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 
+import {
+  authLinkClass,
+  AuthSplitCard,
+} from "@/components/auth/auth-split-card";
 import { FormField } from "@/components/auth/form-field";
 import { FormMessage } from "@/components/auth/form-message";
+import { SocialButtons } from "@/components/auth/social-buttons";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { useErrorText } from "@/components/auth/use-error-text";
+import { Field, FieldDescription } from "@/components/ui/field";
 import { IDLE, type FormState } from "@/lib/form-state";
 import {
   PASSWORD_MAX_LENGTH,
@@ -15,8 +21,9 @@ import {
 } from "@/lib/validations/auth";
 import { signUp } from "@/server/auth/actions";
 
-type Field = "fullName" | "email" | "password";
+type FieldName = "fullName" | "email" | "password" | "confirmPassword";
 
+/** shadcn signup-04, plus the full name the onboarding greets the user with. */
 export function SignUpForm() {
   const t = useTranslations("auth");
   const errorText = useErrorText();
@@ -32,21 +39,44 @@ export function SignUpForm() {
     IDLE,
   );
 
+  const haveAccount = (
+    <FieldDescription className="text-center">
+      {t("signUp.haveAccount")}{" "}
+      <Link href="/login" className={authLinkClass}>
+        {t("signUp.logIn")}
+      </Link>
+    </FieldDescription>
+  );
+
   if (state.status === "success") {
     return (
-      <FormMessage
-        tone="info"
+      <AuthSplitCard
         title={t("signUp.checkEmailTitle")}
-        message={t("signUp.checkEmailBody")}
-      />
+        subtitle={t("signUp.checkEmailBody")}
+        legal="signUp"
+      >
+        {haveAccount}
+      </AuthSplitCard>
     );
   }
 
   const error = state.status === "error" ? state : undefined;
-  const fieldError = (name: Field) => errorText(error?.fieldErrors?.[name]);
+  const fieldError = (name: FieldName) => errorText(error?.fieldErrors?.[name]);
+  const passwordProps = {
+    type: "password",
+    autoComplete: "new-password",
+    required: true,
+    minLength: PASSWORD_MIN_LENGTH,
+    maxLength: PASSWORD_MAX_LENGTH,
+  } as const;
 
   return (
-    <form action={formAction} className="grid gap-4" noValidate>
+    <AuthSplitCard
+      title={t("signUp.title")}
+      subtitle={t("signUp.subtitle")}
+      action={formAction}
+      legal="signUp"
+    >
       <FormMessage message={errorText(error?.error)} />
       <FormField
         name="fullName"
@@ -68,42 +98,30 @@ export function SignUpForm() {
         defaultValue={error?.values?.email}
         error={fieldError("email")}
       />
-      <FormField
-        name="password"
-        type="password"
-        label={t("fields.password")}
-        autoComplete="new-password"
-        required
-        minLength={PASSWORD_MIN_LENGTH}
-        maxLength={PASSWORD_MAX_LENGTH}
-        hint={t("fields.passwordHint")}
-        error={fieldError("password")}
-      />
+      <Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField
+            name="password"
+            label={t("fields.password")}
+            error={fieldError("password")}
+            {...passwordProps}
+          />
+          <FormField
+            name="confirmPassword"
+            label={t("fields.confirmPasswordShort")}
+            error={fieldError("confirmPassword")}
+            {...passwordProps}
+          />
+        </div>
+        <FieldDescription>{t("fields.passwordHint")}</FieldDescription>
+      </Field>
       <SubmitButton
         pending={pending}
         label={t("signUp.submit")}
         pendingLabel={t("signUp.pending")}
       />
-      <p className="text-center text-xs text-muted-foreground">
-        {t.rich("signUp.legal", {
-          terms: (chunks) => (
-            <Link
-              href="/terms"
-              className="underline underline-offset-4 hover:text-foreground"
-            >
-              {chunks}
-            </Link>
-          ),
-          privacy: (chunks) => (
-            <Link
-              href="/privacy"
-              className="underline underline-offset-4 hover:text-foreground"
-            >
-              {chunks}
-            </Link>
-          ),
-        })}
-      </p>
-    </form>
+      <SocialButtons />
+      {haveAccount}
+    </AuthSplitCard>
   );
 }

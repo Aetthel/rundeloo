@@ -17,6 +17,7 @@ describe("signUpSchema", () => {
     fullName: "Jane Doe",
     email: "Jane@Example.com ",
     password: "12345678",
+    confirmPassword: "12345678",
   };
 
   it("accepts a valid sign-up and normalizes the email", () => {
@@ -27,8 +28,15 @@ describe("signUpSchema", () => {
   it.each([
     [{ ...valid, fullName: "  " }, "fullNameRequired"],
     [{ ...valid, email: "not-an-email" }, "invalidEmail"],
-    [{ ...valid, password: "1234567" }, "passwordTooShort"],
-    [{ ...valid, password: "x".repeat(73) }, "passwordTooLong"],
+    [
+      { ...valid, password: "1234567", confirmPassword: "1234567" },
+      "passwordTooShort",
+    ],
+    [
+      { ...valid, password: "x".repeat(73), confirmPassword: "x".repeat(73) },
+      "passwordTooLong",
+    ],
+    [{ ...valid, confirmPassword: "12345679" }, "passwordsDontMatch"],
   ])("rejects %o with %s", (input, message) => {
     expect(firstError(signUpSchema.safeParse(input))).toBe(message);
   });

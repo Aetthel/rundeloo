@@ -17,17 +17,23 @@ const password = z
   .min(PASSWORD_MIN_LENGTH, "passwordTooShort")
   .max(PASSWORD_MAX_LENGTH, "passwordTooLong");
 
-export const signUpSchema = z.strictObject({
-  fullName: z
-    .string()
-    .trim()
-    .min(1, "fullNameRequired")
-    .max(100, "fullNameTooLong"),
-  email,
-  password,
-  // Optional: the trigger ignores values it doesn't recognise.
-  timezone: z.string().max(64).optional(),
-});
+export const signUpSchema = z
+  .strictObject({
+    fullName: z
+      .string()
+      .trim()
+      .min(1, "fullNameRequired")
+      .max(100, "fullNameTooLong"),
+    email,
+    password,
+    confirmPassword: z.string(),
+    // Optional: the trigger ignores values it doesn't recognise.
+    timezone: z.string().max(64).optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "passwordsDontMatch",
+    path: ["confirmPassword"],
+  });
 
 export const signInSchema = z.strictObject({
   email,
