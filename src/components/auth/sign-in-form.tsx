@@ -40,7 +40,7 @@ export function SignInForm({
       <div className="flex justify-center md:hidden">
         <AuthLogo />
       </div>
-      <Card className="overflow-hidden p-0">
+      <Card className="overflow-hidden p-0 ring-2">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form action={formAction} className="p-6 md:p-8" noValidate>
             <FieldGroup>
