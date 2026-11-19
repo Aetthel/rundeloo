@@ -106,7 +106,7 @@ Every action validates input with Zod (same schema as the form) and checks owner
 - Components that call `usePathname` sit behind `<Suspense>` (required by Cache Components on routes with `[id]`); the fallback is the same UI with nothing highlighted.
 - `getShellUser()` (`src/server/account/queries.ts`) gives name, email and plan; `getUser()` awaits `connection()` first, because Supabase calls `Date.now()`.
 - Shared states: `(app)/loading.tsx`, `(app)/error.tsx`, `app/not-found.tsx`, plus `PageHeader`, `EmptyState` and `ComingSoonPage` in `components/shared/`.
-- **Dev-only preview without signing in:** `DEV_PREVIEW_NO_AUTH=1` with `npm run dev` skips the proxy redirects and shows a fake free user. Never active in a production build (`src/lib/dev-preview.ts`, unit tested). Server Actions still require a real session.
+- **Dev-only preview without signing in:** `DEV_PREVIEW_NO_AUTH=1` with `npm run dev` skips the proxy redirects and shows a fake free user. Never active in a production build (`src/lib/dev-preview.ts`, unit tested). Server Actions still require a real session. In that mode, reads return sample data via `servePreviewData()` (`src/server/preview.ts`); each feature keeps its fixtures in `src/server/<feature>/preview-data.ts`.
 
 ## Forms and shared components
 

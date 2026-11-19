@@ -7,6 +7,8 @@ import type { ApplicationStatus } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/server/auth/session";
 import { companyLogos } from "@/server/companies/favicon";
+import { previewCompanies } from "@/server/companies/preview-data";
+import { servePreviewData } from "@/server/preview";
 import type { Database } from "@/types/database";
 
 type CompanyRow = Database["public"]["Tables"]["companies"]["Row"];
@@ -29,14 +31,15 @@ export type CompanyListItem = Pick<
  * Sorted by best stage, then most recent activity.
  */
 export async function listCompanies(): Promise<CompanyListItem[]> {
-  await requireUser();
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("companies")
-    .select(
-      "id, name, industry, location, website, created_at, updated_at, applications(status, updated_at), contacts(updated_at)",
-    );
-  if (error) throw new Error("Could not load companies", { cause: error });
+  const data = (await servePreviewData())
+    ? previewCompanies().map((c) => ({
+        ...c,
+        applications: c.applications.map((a) => ({
+          status: a.status,
+          updated_at: a.status_changed_at ?? c.updated_at,
+        })),
+      }))
+    : await fetchCompanies();
 
   // Cached per host, so after the first visit this is instant.
   const logos = await companyLogos(data.map((c) => c.website));
@@ -65,6 +68,18 @@ export async function listCompanies(): Promise<CompanyListItem[]> {
     );
 }
 
+async function fetchCompanies() {
+  await requireUser();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("companies")
+    .select(
+      "id, name, industry, location, website, created_at, updated_at, applications(status, updated_at), contacts(updated_at)",
+    );
+  if (error) throw new Error("Could not load companies", { cause: error });
+  return data;
+}
+
 export type CompanyDetail = CompanyRow & {
   applications: {
     id: string;
@@ -82,6 +97,9 @@ export type CompanyDetail = CompanyRow & {
  */
 export const getCompany = cache(
   async (id: string): Promise<CompanyDetail | null> => {
+    if (await servePreviewData()) {
+      return previewCompanies().find((c) => c.id === id) ?? null;
+    }
     await requireUser();
     const supabase = await createClient();
     const { data, error } = await supabase
