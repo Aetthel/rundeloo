@@ -31,6 +31,14 @@ export function CompaniesTable({
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
 
+  // Visible dash, spoken "No data".
+  const none = (
+    <>
+      <span aria-hidden>{t("none")}</span>
+      <span className="sr-only">{t("noData")}</span>
+    </>
+  );
+
   const visible = deferredQuery
     ? companies.filter((c) => c.name.toLowerCase().includes(deferredQuery))
     : companies;
@@ -65,7 +73,8 @@ export function CompaniesTable({
                 {t("columns.location")}
               </TableHead>
               <TableHead className="hidden text-right sm:table-cell">
-                {t("columns.applications")}
+                <span aria-hidden>{t("columns.applications")}</span>
+                <span className="sr-only">{t("applicationsFull")}</span>
               </TableHead>
               <TableHead className="hidden text-right sm:table-cell">
                 {t("columns.contacts")}
@@ -91,17 +100,17 @@ export function CompaniesTable({
                   </div>
                 </TableCell>
                 <TableCell className="hidden text-muted-foreground md:table-cell">
-                  {company.industry ?? t("none")}
+                  {company.industry ?? none}
                 </TableCell>
                 <TableCell>
                   {company.bestStage ? (
                     <StatusBadge status={company.bestStage} />
                   ) : (
-                    <span className="text-muted-foreground">{t("none")}</span>
+                    <span className="text-muted-foreground">{none}</span>
                   )}
                 </TableCell>
                 <TableCell className="hidden text-muted-foreground lg:table-cell">
-                  {company.location ?? t("none")}
+                  {company.location ?? none}
                 </TableCell>
                 <TableCell className="hidden text-right font-mono sm:table-cell">
                   {company.applicationsCount}
@@ -112,7 +121,7 @@ export function CompaniesTable({
                 <TableCell className="hidden text-right text-muted-foreground md:table-cell">
                   {company.lastActivity
                     ? format.relativeTime(new Date(company.lastActivity), now)
-                    : t("none")}
+                    : none}
                 </TableCell>
               </TableRow>
             ))}
@@ -124,6 +133,10 @@ export function CompaniesTable({
           </p>
         )}
       </div>
+      {/* Always mounted, so screen readers hear the count change as you type. */}
+      <p role="status" className="sr-only">
+        {deferredQuery ? t("results", { count: visible.length }) : ""}
+      </p>
     </div>
   );
 }

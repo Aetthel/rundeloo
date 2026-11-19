@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ReactNode, useActionState } from "react";
+import { type ReactNode, type RefObject, useActionState } from "react";
 
 import {
   FieldShell,
@@ -34,12 +34,14 @@ export function ContactFormSheet({
   trigger,
   open,
   onOpenChange,
+  returnFocusTo,
 }: {
   companyId: string;
   contact?: ContactRow;
   trigger?: ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  returnFocusTo?: RefObject<HTMLElement | null>;
 }) {
   const t = useTranslations("companies.contacts.form");
 
@@ -48,7 +50,9 @@ export function ContactFormSheet({
       trigger={trigger}
       open={open}
       onOpenChange={onOpenChange}
+      returnFocusTo={returnFocusTo}
       title={contact ? t("editTitle") : t("createTitle")}
+      description={t("description")}
     >
       {(close) => (
         <ContactForm companyId={companyId} contact={contact} onSaved={close} />

@@ -91,6 +91,7 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
                     className="underline-offset-4 hover:underline"
                   >
                     {displayHost(company.website)}
+                    <span className="sr-only">{t("opensInNewTab")}</span>
                   </a>
                 </dd>
               </>

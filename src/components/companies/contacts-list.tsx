@@ -8,8 +8,9 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { ContactFormSheet } from "@/components/companies/contact-form";
 import { ConfirmDelete } from "@/components/shared/confirm-delete";
@@ -58,6 +59,8 @@ function ContactItem({
   const errorText = useErrorText("companies.errors");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  // Focus returns here after the edit sheet or delete dialog closes.
+  const moreRef = useRef<HTMLButtonElement>(null);
   const name = contact.full_name;
 
   return (
@@ -75,7 +78,12 @@ function ContactItem({
       </div>
       <div className="flex items-center gap-1">
         {contact.email && (
-          <Button variant="ghost" size="icon-sm" asChild>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="size-9 sm:size-7"
+            asChild
+          >
             <a
               href={`mailto:${contact.email}`}
               aria-label={t("email", { name })}
@@ -85,7 +93,12 @@ function ContactItem({
           </Button>
         )}
         {contact.linkedin_url && (
-          <Button variant="ghost" size="icon-sm" asChild>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="size-9 sm:size-7"
+            asChild
+          >
             <a
               href={contact.linkedin_url}
               target="_blank"
@@ -98,24 +111,27 @@ function ContactItem({
             </a>
           </Button>
         )}
-        {/* Pro teaser: visible but locked; the reminders panel arrives with Pro features. */}
+        {/* Pro teaser: visible and focusable, leads to the plan page (the paywall comes later). */}
         <Button
           variant="ghost"
           size="sm"
-          disabled
-          className="text-locked"
-          title={t("remindLocked")}
+          className="h-9 text-locked sm:h-7"
+          asChild
         >
-          <BellPlus aria-hidden />
-          {t("remind")}
-          <Lock className="size-3" aria-hidden />
-          <span className="sr-only">{t("remindLocked")}</span>
+          <Link href="/settings/billing">
+            <BellPlus aria-hidden />
+            <span aria-hidden>{t("remind")}</span>
+            <Lock className="size-3" aria-hidden />
+            <span className="sr-only">{t("remindUnlock")}</span>
+          </Link>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
+              ref={moreRef}
               variant="ghost"
               size="icon-sm"
+              className="size-9 sm:size-7"
               aria-label={t("actions", { name })}
             >
               <MoreHorizontal aria-hidden />
@@ -142,14 +158,16 @@ function ContactItem({
         contact={contact}
         open={editOpen}
         onOpenChange={setEditOpen}
+        returnFocusTo={moreRef}
       />
       <ConfirmDelete
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
+        returnFocusTo={moreRef}
         title={t("deleteTitle", { name })}
         description={t("deleteBody")}
         confirmLabel={t("delete")}
-        pendingLabel={t("delete")}
+        pendingLabel={t("deleting")}
         cancelLabel={t("form.cancel")}
         onConfirm={async () => {
           const result = await deleteContact({

@@ -6,7 +6,7 @@ import { bestStage, latestDate, stageRank } from "@/lib/companies";
 import type { ApplicationStatus } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/server/auth/session";
-import { companyLogo } from "@/server/companies/favicon";
+import { companyLogos } from "@/server/companies/favicon";
 import type { Database } from "@/types/database";
 
 type CompanyRow = Database["public"]["Tables"]["companies"]["Row"];
@@ -38,8 +38,8 @@ export async function listCompanies(): Promise<CompanyListItem[]> {
     );
   if (error) throw new Error("Could not load companies", { cause: error });
 
-  // Favicons are cached per host, so after the first visit this is instant.
-  const logos = await Promise.all(data.map((c) => companyLogo(c.website)));
+  // Cached per host, so after the first visit this is instant.
+  const logos = await companyLogos(data.map((c) => c.website));
 
   return data
     .map((company, index) => ({

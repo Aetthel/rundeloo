@@ -12,7 +12,8 @@
     },
     "save": "Save",
     "cancel": "Cancel",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "close": "Close"
   },
   "enums": {
     "applicationStatus": {
@@ -246,7 +247,10 @@
       "emptyTitle": "Add your first company",
       "emptyBody": "Companies group your applications, contacts and notes. Start with one you're interested in.",
       "noResults": "No companies match “{query}”.",
-      "none": "—"
+      "none": "—",
+      "applicationsFull": "Applications",
+      "noData": "No data",
+      "results": "{count, plural, =0 {No companies} one {# company} other {# companies}}"
     },
     "detail": {
       "edit": "Edit",
@@ -274,7 +278,8 @@
       "contactsEmpty": "No contacts yet.",
       "viewAll": "View all",
       "notesTabTitle": "Notes are coming",
-      "notesTabBody": "Linked notes for this company arrive with the notes editor."
+      "notesTabBody": "Linked notes for this company arrive with the notes editor.",
+      "opensInNewTab": " (opens in a new tab)"
     },
     "form": {
       "createTitle": "Add company",
@@ -310,12 +315,11 @@
       "emptyTitle": "No contacts yet",
       "emptyBody": "Add recruiters, referrals and interviewers to keep track of who you talk to.",
       "email": "Email {name}",
-      "linkedin": "{name} on LinkedIn",
+      "linkedin": "{name} on LinkedIn (opens in a new tab)",
       "actions": "Actions for {name}",
       "edit": "Edit",
       "delete": "Delete",
       "remind": "Remind",
-      "remindLocked": "Reminders are a Pro feature",
       "form": {
         "createTitle": "Add contact",
         "editTitle": "Edit contact",
@@ -332,10 +336,13 @@
         "save": "Save",
         "create": "Add contact",
         "saving": "Saving…",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "description": "Only the name is required."
       },
       "deleteTitle": "Delete {name}?",
-      "deleteBody": "This contact will be removed from the company. You can't undo this."
+      "deleteBody": "This contact will be removed from the company. You can't undo this.",
+      "remindUnlock": "Remind: unlock with Pro",
+      "deleting": "Deleting…"
     },
     "errors": {
       "nameRequired": "Enter a name.",

@@ -31,9 +31,13 @@ export async function faviconDataUri(host: string): Promise<string | null> {
   try {
     const response = await fetch(
       `https://icons.duckduckgo.com/ip3/${encodeURIComponent(host)}.ico`,
-      { signal: AbortSignal.timeout(3000) },
+      // No redirects: the only host we talk to is the one above.
+      { signal: AbortSignal.timeout(3000), redirect: "error" },
     );
     if (!response.ok) return null;
+    // Refuse oversized bodies before reading them into memory.
+    const declared = Number(response.headers.get("content-length"));
+    if (declared > MAX_BYTES) return null;
 
     const type = (response.headers.get("content-type") ?? "")
       .split(";")[0]
@@ -49,6 +53,25 @@ export async function faviconDataUri(host: string): Promise<string | null> {
     // Timeout, network error or bad response: initials are fine.
     return null;
   }
+}
+
+/**
+ * Favicons for several websites, at most `limit` uncached fetches at a time, so
+ * a user with hundreds of companies can't fire hundreds of requests per render.
+ */
+export async function companyLogos(websites: (string | null)[], limit = 6) {
+  const results: (string | null)[] = new Array(websites.length).fill(null);
+  let next = 0;
+  const worker = async () => {
+    while (next < websites.length) {
+      const index = next++;
+      results[index] = await companyLogo(websites[index]);
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(limit, websites.length) }, worker),
+  );
+  return results;
 }
 
 /** Favicon for a stored company website (already normalized to http(s)). */

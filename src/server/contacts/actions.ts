@@ -4,6 +4,8 @@ import "server-only";
 
 import { revalidatePath } from "next/cache";
 
+import { z } from "zod";
+
 import { fieldErrorsOf, type FormState } from "@/lib/form-state";
 import { createClient } from "@/lib/supabase/server";
 import { contactSchema, idSchema } from "@/lib/validations/company";
@@ -53,6 +55,9 @@ function parse(formData: FormData) {
   };
 }
 
+// The whole object is validated: a direct call with null must not throw.
+const idsSchema = z.strictObject({ contactId: idSchema, companyId: idSchema });
+
 const refresh = (companyId: string) =>
   revalidatePath(`/companies/${companyId}`, "layout");
 
@@ -97,10 +102,7 @@ export async function updateContact(
   formData: FormData,
 ): Promise<FormState> {
   const user = await requireUser();
-  if (
-    !idSchema.safeParse(ids.contactId).success ||
-    !idSchema.safeParse(ids.companyId).success
-  ) {
+  if (!idsSchema.safeParse(ids).success) {
     return { status: "error", error: "notFound" };
   }
   const result = parse(formData);
@@ -132,10 +134,7 @@ export async function deleteContact(ids: {
   companyId: string;
 }): Promise<FormState> {
   const user = await requireUser();
-  if (
-    !idSchema.safeParse(ids.contactId).success ||
-    !idSchema.safeParse(ids.companyId).success
-  ) {
+  if (!idsSchema.safeParse(ids).success) {
     return { status: "error", error: "notFound" };
   }
 

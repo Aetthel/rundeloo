@@ -2,7 +2,7 @@
 
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import {
   CompanyFormSheet,
@@ -33,6 +33,7 @@ export function CompanyActions({
   const errorText = useErrorText("companies.errors");
   const format = useFormatter();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const moreRef = useRef<HTMLButtonElement>(null);
 
   // "2 applications and 1 contact", only naming what exists.
   const items = [
@@ -46,7 +47,7 @@ export function CompanyActions({
       <CompanyFormSheet
         company={company}
         trigger={
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="h-9 sm:h-7">
             <Pencil aria-hidden />
             {t("detail.edit")}
           </Button>
@@ -55,8 +56,10 @@ export function CompanyActions({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
+            ref={moreRef}
             variant="outline"
             size="icon-sm"
+            className="size-9 sm:size-7"
             aria-label={t("detail.more")}
           >
             <MoreHorizontal aria-hidden />
@@ -75,6 +78,7 @@ export function CompanyActions({
       <ConfirmDelete
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
+        returnFocusTo={moreRef}
         title={t("delete.title", { name: company.name })}
         description={
           items.length

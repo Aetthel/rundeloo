@@ -12,7 +12,8 @@
     },
     "save": "Guardar",
     "cancel": "Cancelar",
-    "loading": "Cargando…"
+    "loading": "Cargando…",
+    "close": "Cerrar"
   },
   "enums": {
     "applicationStatus": {
@@ -246,7 +247,10 @@
       "emptyTitle": "Añade tu primera empresa",
       "emptyBody": "Las empresas agrupan tus candidaturas, contactos y notas. Empieza por una que te interese.",
       "noResults": "Ninguna empresa coincide con “{query}”.",
-      "none": "—"
+      "none": "—",
+      "applicationsFull": "Candidaturas",
+      "noData": "Sin datos",
+      "results": "{count, plural, =0 {Ninguna empresa} one {# empresa} other {# empresas}}"
     },
     "detail": {
       "edit": "Editar",
@@ -274,7 +278,8 @@
       "contactsEmpty": "Aún no hay contactos.",
       "viewAll": "Ver todos",
       "notesTabTitle": "Las notas están en camino",
-      "notesTabBody": "Las notas vinculadas a esta empresa llegarán con el editor de notas."
+      "notesTabBody": "Las notas vinculadas a esta empresa llegarán con el editor de notas.",
+      "opensInNewTab": " (se abre en una pestaña nueva)"
     },
     "form": {
       "createTitle": "Añadir empresa",
@@ -310,12 +315,11 @@
       "emptyTitle": "Aún no hay contactos",
       "emptyBody": "Añade recruiters, referidos y entrevistadores para no perder de vista con quién hablas.",
       "email": "Enviar email a {name}",
-      "linkedin": "{name} en LinkedIn",
+      "linkedin": "{name} en LinkedIn (se abre en una pestaña nueva)",
       "actions": "Acciones para {name}",
       "edit": "Editar",
       "delete": "Borrar",
       "remind": "Recordar",
-      "remindLocked": "Los recordatorios son una función Pro",
       "form": {
         "createTitle": "Añadir contacto",
         "editTitle": "Editar contacto",
@@ -332,10 +336,13 @@
         "save": "Guardar",
         "create": "Añadir contacto",
         "saving": "Guardando…",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "description": "Solo el nombre es obligatorio."
       },
       "deleteTitle": "¿Borrar a {name}?",
-      "deleteBody": "Este contacto se quitará de la empresa. No se puede deshacer."
+      "deleteBody": "Este contacto se quitará de la empresa. No se puede deshacer.",
+      "remindUnlock": "Recordar: desbloquéalo con Pro",
+      "deleting": "Borrando…"
     },
     "errors": {
       "nameRequired": "Escribe un nombre.",
