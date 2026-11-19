@@ -1,7 +1,12 @@
 import type { ComponentProps, ReactNode } from "react";
 
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 /** Labelled input with hint and error wired to aria-describedby for screen readers. */
 export function FormField({
@@ -23,10 +28,10 @@ export function FormField({
   const errorId = error ? `${id}-error` : undefined;
 
   return (
-    <div className="grid gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <Label htmlFor={id}>{label}</Label>
-        {labelAction}
+    <Field data-invalid={error ? true : undefined}>
+      <div className="flex items-center">
+        <FieldLabel htmlFor={id}>{label}</FieldLabel>
+        {labelAction && <div className="ml-auto">{labelAction}</div>}
       </div>
       <Input
         id={id}
@@ -38,16 +43,10 @@ export function FormField({
         {...inputProps}
       />
       {error ? (
-        <p id={errorId} className="text-sm text-destructive">
-          {error}
-        </p>
+        <FieldError id={errorId}>{error}</FieldError>
       ) : (
-        hint && (
-          <p id={hintId} className="text-xs text-muted-foreground">
-            {hint}
-          </p>
-        )
+        hint && <FieldDescription id={hintId}>{hint}</FieldDescription>
       )}
-    </div>
+    </Field>
   );
 }

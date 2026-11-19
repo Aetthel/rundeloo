@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { AuthLogo } from "@/components/auth/auth-logo";
 import {
   Card,
   CardContent,
@@ -8,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-/** Wireframes 02–04: titled card with the form, and an optional link below it. */
+/** Narrow card for register and password screens: logo, titled card, optional link below. */
 export function AuthCard({
   title,
   description,
@@ -21,7 +22,8 @@ export function AuthCard({
   footer?: ReactNode;
 }) {
   return (
-    <>
+    <div className="flex w-full max-w-sm flex-col gap-6">
+      <AuthLogo />
       <Card className="py-6 [--card-spacing:--spacing(6)]">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">
@@ -31,7 +33,7 @@ export function AuthCard({
         </CardHeader>
         <CardContent>{children}</CardContent>
       </Card>
-      {footer && <p className="mt-6 text-center text-sm">{footer}</p>}
-    </>
+      {footer && <p className="text-center text-sm">{footer}</p>}
+    </div>
   );
 }

@@ -4,10 +4,16 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 
+import {
+  authLinkClass,
+  AuthSplitCard,
+} from "@/components/auth/auth-split-card";
 import { FormField } from "@/components/auth/form-field";
 import { FormMessage } from "@/components/auth/form-message";
+import { SocialButtons } from "@/components/auth/social-buttons";
 import { SubmitButton } from "@/components/auth/submit-button";
 import { useErrorText } from "@/components/auth/use-error-text";
+import { FieldDescription } from "@/components/ui/field";
 import { IDLE } from "@/lib/form-state";
 import { signIn } from "@/server/auth/actions";
 
@@ -28,7 +34,11 @@ export function SignInForm({
   const formError = state.status === "idle" ? initialError : error?.error;
 
   return (
-    <form action={formAction} className="grid gap-4" noValidate>
+    <AuthSplitCard
+      title={t("signIn.title")}
+      subtitle={t("signIn.subtitle")}
+      action={formAction}
+    >
       <FormMessage message={errorText(formError)} />
       {next && <input type="hidden" name="next" value={next} />}
       <FormField
@@ -51,7 +61,7 @@ export function SignInForm({
         labelAction={
           <Link
             href="/forgot-password"
-            className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            className="text-sm underline-offset-2 hover:underline"
           >
             {t("signIn.forgot")}
           </Link>
@@ -62,6 +72,13 @@ export function SignInForm({
         label={t("signIn.submit")}
         pendingLabel={t("signIn.pending")}
       />
-    </form>
+      <SocialButtons />
+      <FieldDescription className="text-center">
+        {t("signIn.noAccount")}{" "}
+        <Link href="/register" className={authLinkClass}>
+          {t("signIn.signUp")}
+        </Link>
+      </FieldDescription>
+    </AuthSplitCard>
   );
 }
