@@ -35,7 +35,7 @@ function AddCompanyButton({ label }: { label: string }) {
   return (
     <CompanyFormDialog
       trigger={
-        <Button variant="link" className="h-9 px-1 sm:h-8">
+        <Button>
           <Plus aria-hidden />
           {label}
         </Button>

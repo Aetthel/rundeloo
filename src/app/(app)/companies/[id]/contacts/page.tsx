@@ -30,7 +30,7 @@ async function Contacts({ params }: { params: Promise<{ id: string }> }) {
     <ContactFormSheet
       companyId={company.id}
       trigger={
-        <Button variant="link" className="h-9 px-1 sm:h-8">
+        <Button>
           <Plus aria-hidden />
           {t("add")}
         </Button>

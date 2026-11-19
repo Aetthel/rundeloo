@@ -38,11 +38,11 @@ export function CompanyActions({
   ].filter((item): item is string => Boolean(item));
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2">
       <CompanyFormDialog
         company={company}
         trigger={
-          <Button variant="link" className="h-9 px-1 sm:h-8">
+          <Button variant="outline" size="sm" className="h-9 sm:h-7">
             <Pencil aria-hidden />
             {t("detail.edit")}
           </Button>
@@ -51,8 +51,9 @@ export function CompanyActions({
       {/* Destructive but never immediate: it only opens the confirmation popup. */}
       <Button
         ref={deleteRef}
-        variant="link"
-        className="h-9 px-1 text-destructive sm:h-8"
+        variant="destructive"
+        size="sm"
+        className="h-9 sm:h-7"
         onClick={() => setConfirmOpen(true)}
       >
         <Trash2 aria-hidden />
