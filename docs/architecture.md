@@ -108,6 +108,12 @@ Every action validates input with Zod (same schema as the form) and checks owner
 - Shared states: `(app)/loading.tsx`, `(app)/error.tsx`, `app/not-found.tsx`, plus `PageHeader`, `EmptyState` and `ComingSoonPage` in `components/shared/`.
 - **Dev-only preview without signing in:** `DEV_PREVIEW_NO_AUTH=1` with `npm run dev` skips the proxy redirects and shows a fake free user. Never active in a production build (`src/lib/dev-preview.ts`, unit tested). Server Actions still require a real session.
 
+## Forms and shared components
+
+- Server Actions return `FormState` (`src/lib/form-state.ts`) with i18n error keys; forms use `useActionState` and echo safe values back after an error.
+- `components/shared/`: `FormField` / `FormTextarea` / `FieldShell`, `FormMessage`, `SubmitButton`, `FormSheet` (create/edit panel), `ConfirmDelete`, `SectionCard`, `StatusBadge`, `PageHeader`, `EmptyState`.
+- Detail routes read `params` and data inside `<Suspense>`; `loadCompanyOr404()` returns 404 for malformed ids and for rows RLS hides.
+
 ## i18n (option B — no locale in the URL)
 
 Locale resolution, highest priority first:

@@ -53,6 +53,14 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - **Only Alex runs migrations and remote changes.** Claude prepares the file in `supabase/migrations/`.
 - All Claude Code configuration lives in `.claude/`, with `CLAUDE.md` at the repo root.
 
+## Companies (2026-11-19)
+
+- **Create and edit forms open in a side sheet** (`FormSheet`), the pattern M1 reuses. Delete asks in an `AlertDialog` that names what goes with it (cascade).
+- **Company logos are favicons fetched by our server** from DuckDuckGo's icon service, cached for weeks per host (`"use cache"`) and inlined as data URIs. The user's browser never contacts a third party; only the host is sent. Initials when there is none. No Route Handler needed.
+- **Websites are normalized** to `https://` and only http(s) URLs are stored; LinkedIn fields must point to linkedin.com.
+- **Derived columns** (best stage, counts, last activity) are computed in `listCompanies()`; best stage follows `PIPELINE_PRIORITY` in `src/lib/constants.ts`.
+- Contact reminders stay a locked Pro teaser until the Pro features (task 11). The Activity card waits for applications (part 3).
+
 ## App shell (2026-11-19)
 
 - **shadcn `Sidebar`** is the base of the shell; the design is iterated on it.
