@@ -172,5 +172,60 @@
       "comingSoon": "Próximamente",
       "separatorSoon": "O continúa con (próximamente)"
     }
+  },
+  "nav": {
+    "groups": {
+      "workspace": "Espacio de trabajo",
+      "prep": "Preparación"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "applications": "Candidaturas",
+      "companies": "Empresas",
+      "calendar": "Calendario",
+      "notes": "Notas",
+      "questions": "Banco de preguntas",
+      "weeklySummary": "Resumen semanal",
+      "settings": "Ajustes",
+      "billing": "Plan y facturación"
+    },
+    "detail": "Detalle",
+    "more": "Más",
+    "pro": "Pro",
+    "proLocked": "Función Pro",
+    "home": "Inicio",
+    "mainNav": "Navegación principal",
+    "mobileNav": "Navegación rápida",
+    "breadcrumb": "Ruta de navegación",
+    "toggleSidebar": "Mostrar u ocultar la barra lateral"
+  },
+  "shell": {
+    "upgradeTitle": "Desbloquea la IA con Pro",
+    "upgradeBody": "Simulador de entrevistas, planes de estudio y tu resumen semanal.",
+    "upgradeCta": "Pasar a Pro",
+    "proTitle": "Plan Pro",
+    "proCta": "Gestionar plan",
+    "alerts": "Alertas",
+    "noAlerts": "Lo tienes todo al día.",
+    "account": "Menú de cuenta",
+    "theme": "Tema",
+    "themes": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "language": "Idioma",
+    "signOut": "Cerrar sesión"
+  },
+  "states": {
+    "comingSoonTitle": "Próximamente",
+    "comingSoonBody": "Esta pantalla está en construcción. La navegación ya funciona, así que puedes recorrer el resto de la app.",
+    "errorTitle": "Algo ha fallado",
+    "errorBody": "No hemos podido cargar esta página. Inténtalo de nuevo en un momento.",
+    "retry": "Reintentar",
+    "notFoundTitle": "Página no encontrada",
+    "notFoundBody": "La página que buscas no existe o se ha movido.",
+    "backHome": "Ir al dashboard",
+    "loading": "Cargando…"
   }
 }

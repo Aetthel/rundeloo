@@ -99,6 +99,15 @@ Every action validates input with Zod (same schema as the form) and checks owner
 - The rules live in `src/lib/route-access.ts` (pure, unit tested); `src/lib/supabase/proxy.ts` only reads the session and the profile.
 - Onboarding progress per step lives in `localStorage` (v1); completion is stored server-side in `profiles.onboarding_completed`.
 
+## App shell
+
+- `src/app/(app)/layout.tsx`: shadcn `Sidebar` (collapsible to icons on desktop, sheet on mobile) + `TopBar` (breadcrumb, alerts, account menu) + `MobileBar` below md, whose "More" opens the sidebar sheet.
+- Navigation lives only in `src/lib/navigation.ts` (routes, icons, i18n keys, Pro flag); sidebar, breadcrumb and mobile bar read from it.
+- Components that call `usePathname` sit behind `<Suspense>` (required by Cache Components on routes with `[id]`); the fallback is the same UI with nothing highlighted.
+- `getShellUser()` (`src/server/account/queries.ts`) gives name, email and plan; `getUser()` awaits `connection()` first, because Supabase calls `Date.now()`.
+- Shared states: `(app)/loading.tsx`, `(app)/error.tsx`, `app/not-found.tsx`, plus `PageHeader`, `EmptyState` and `ComingSoonPage` in `components/shared/`.
+- **Dev-only preview without signing in:** `DEV_PREVIEW_NO_AUTH=1` with `npm run dev` skips the proxy redirects and shows a fake free user. Never active in a production build (`src/lib/dev-preview.ts`, unit tested). Server Actions still require a real session.
+
 ## i18n (option B — no locale in the URL)
 
 Locale resolution, highest priority first:

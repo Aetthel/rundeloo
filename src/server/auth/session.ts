@@ -1,12 +1,16 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { cache } from "react";
 
 import { createClient } from "@/lib/supabase/server";
 
 /** User validated with Supabase, or null. Memoized per request. */
 export const getUser = cache(async () => {
+  // Supabase checks token expiry with Date.now(), which Cache Components rejects
+  // during prerendering. Wait for the real request first.
+  await connection();
   const supabase = await createClient();
   const {
     data: { user },

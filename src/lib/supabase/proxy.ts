@@ -7,6 +7,7 @@ import {
   type AccessState,
 } from "@/lib/route-access";
 import { LOCALE_COOKIE, LOCALE_COOKIE_MAX_AGE, isLocale } from "@/i18n/config";
+import { isAuthPreview } from "@/lib/dev-preview";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 import type { Database } from "@/types/database";
 
@@ -112,6 +113,9 @@ export async function updateSession(request: NextRequest) {
       sameSite: "lax",
     });
   }
+
+  // Dev-only UI preview: no redirects at all. Never on in a production build.
+  if (isAuthPreview()) return response;
 
   const destination = resolveRedirect(pathname, state);
   if (!destination) return response;
