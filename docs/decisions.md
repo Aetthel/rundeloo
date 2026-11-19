@@ -53,10 +53,19 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - **Only Alex runs migrations and remote changes.** Claude prepares the file in `supabase/migrations/`.
 - All Claude Code configuration lives in `.claude/`, with `CLAUDE.md` at the repo root.
 
+## Companies (2026-11-19)
+
+- **Create and edit forms open in a side sheet** (`FormSheet`), the pattern M1 reuses. Delete asks in an `AlertDialog` that names what goes with it (cascade).
+- **Company logos are favicons fetched by our server** from DuckDuckGo's icon service, cached for weeks per host (`"use cache"`) and inlined as data URIs. The user's browser never contacts a third party; only the host is sent. Initials when there is none. No Route Handler needed.
+- **Websites are normalized** to `https://` and only http(s) URLs are stored; LinkedIn fields must point to linkedin.com.
+- **Derived columns** (best stage, counts, last activity) are computed in `listCompanies()`; best stage follows `PIPELINE_PRIORITY` in `src/lib/constants.ts`.
+- Contact reminders stay a locked Pro teaser until the Pro features (task 11). The Activity card waits for applications (part 3).
+
 ## App shell (2026-11-19)
 
 - **shadcn `Sidebar`** is the base of the shell; the design is iterated on it.
 - **One background tone** for sidebar, top bar and content (`bg-sidebar`). Only the Pro upgrade card stands out: `bg-steel` with a fixed light button, in both themes.
+- **Containers inside screens use the `surface` token** (white in light, steel in dark, never black), with lighter inner borders in dark. Applies to every future screen.
 - **Theme and language switchers live in the account menu.** The theme is saved in `profiles.theme` (`system` = null).
 - **Mobile:** bottom bar (Dashboard, Applications, Calendar, Notes, More); "More" opens the sidebar sheet.
 - **`DEV_PREVIEW_NO_AUTH`** allows browsing the app without signing in, only under `next dev`.

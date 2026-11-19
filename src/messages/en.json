@@ -12,7 +12,8 @@
     },
     "save": "Save",
     "cancel": "Cancel",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "close": "Close"
   },
   "enums": {
     "applicationStatus": {
@@ -227,5 +228,132 @@
     "notFoundBody": "The page you're looking for doesn't exist or has moved.",
     "backHome": "Go to dashboard",
     "loading": "Loading…"
+  },
+  "companies": {
+    "list": {
+      "description": "Every company you're applying to, with its contacts.",
+      "add": "Add company",
+      "search": "Search companies",
+      "searchLabel": "Search companies by name",
+      "columns": {
+        "company": "Company",
+        "industry": "Industry",
+        "bestStage": "Best stage",
+        "location": "Location",
+        "applications": "Apps",
+        "contacts": "Contacts",
+        "lastActivity": "Last activity"
+      },
+      "emptyTitle": "Add your first company",
+      "emptyBody": "Companies group your applications, contacts and notes. Start with one you're interested in.",
+      "noResults": "No companies match “{query}”.",
+      "none": "—",
+      "applicationsFull": "Applications",
+      "noData": "No data",
+      "results": "{count, plural, =0 {No companies} one {# company} other {# companies}}"
+    },
+    "detail": {
+      "edit": "Edit",
+      "more": "More actions",
+      "delete": "Delete company",
+      "visitWebsite": "Visit website",
+      "tabs": {
+        "applications": "Applications",
+        "contacts": "Contacts",
+        "notes": "Notes"
+      },
+      "tabsLabel": "Company sections",
+      "applications": "Applications",
+      "applicationsEmpty": "No applications for this company yet.",
+      "nextInterview": "Next interview",
+      "nextInterviewEmpty": "No interviews scheduled.",
+      "notes": "Company notes",
+      "notesEmpty": "No notes yet. Use Edit to add some.",
+      "about": "About",
+      "website": "Website",
+      "industry": "Industry",
+      "location": "Location",
+      "added": "Added",
+      "contacts": "Contacts",
+      "contactsEmpty": "No contacts yet.",
+      "viewAll": "View all",
+      "notesTabTitle": "Notes are coming",
+      "notesTabBody": "Linked notes for this company arrive with the notes editor.",
+      "opensInNewTab": " (opens in a new tab)"
+    },
+    "form": {
+      "createTitle": "Add company",
+      "editTitle": "Edit company",
+      "description": "Only the name is required.",
+      "name": "Name",
+      "namePlaceholder": "Acme",
+      "website": "Website",
+      "websitePlaceholder": "acme.com",
+      "industry": "Industry",
+      "industryPlaceholder": "Fintech",
+      "location": "Location",
+      "locationPlaceholder": "Remote · New York",
+      "notes": "Notes",
+      "notesPlaceholder": "What you know about the company, culture, stack…",
+      "save": "Save",
+      "create": "Add company",
+      "saving": "Saving…",
+      "cancel": "Cancel"
+    },
+    "delete": {
+      "title": "Delete {name}?",
+      "body": "This also deletes {items}. You can't undo this.",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "cancel": "Cancel",
+      "bodyEmpty": "It has no applications or contacts. You can't undo this.",
+      "applications": "{count, plural, one {# application} other {# applications}}",
+      "contacts": "{count, plural, one {# contact} other {# contacts}}"
+    },
+    "contacts": {
+      "add": "Add contact",
+      "emptyTitle": "No contacts yet",
+      "emptyBody": "Add recruiters, referrals and interviewers to keep track of who you talk to.",
+      "email": "Email {name}",
+      "linkedin": "{name} on LinkedIn (opens in a new tab)",
+      "actions": "Actions for {name}",
+      "edit": "Edit",
+      "delete": "Delete",
+      "remind": "Remind",
+      "form": {
+        "createTitle": "Add contact",
+        "editTitle": "Edit contact",
+        "fullName": "Full name",
+        "fullNamePlaceholder": "Ana García",
+        "role": "Role",
+        "noRole": "No role",
+        "email": "Email",
+        "emailPlaceholder": "ana@acme.com",
+        "phone": "Phone",
+        "linkedin": "LinkedIn",
+        "linkedinPlaceholder": "linkedin.com/in/ana",
+        "notes": "Notes",
+        "save": "Save",
+        "create": "Add contact",
+        "saving": "Saving…",
+        "cancel": "Cancel",
+        "description": "Only the name is required."
+      },
+      "deleteTitle": "Delete {name}?",
+      "deleteBody": "This contact will be removed from the company. You can't undo this.",
+      "remindUnlock": "Remind: unlock with Pro",
+      "deleting": "Deleting…"
+    },
+    "errors": {
+      "nameRequired": "Enter a name.",
+      "tooLong": "That's too long.",
+      "invalidWebsite": "Enter a valid website, like acme.com.",
+      "invalidEmail": "Enter a valid email address.",
+      "invalidLinkedin": "Enter a LinkedIn profile URL.",
+      "saveFailed": "We couldn't save it. Try again.",
+      "deleteFailed": "We couldn't delete it. Try again.",
+      "notFound": "This item no longer exists.",
+      "unexpected": "Something went wrong. Try again."
+    }
   }
 }

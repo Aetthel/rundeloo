@@ -6,10 +6,10 @@ import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 
 import { AuthSplitCard } from "@/components/auth/auth-split-card";
-import { FormField } from "@/components/auth/form-field";
-import { FormMessage } from "@/components/auth/form-message";
-import { SubmitButton } from "@/components/auth/submit-button";
-import { useErrorText } from "@/components/auth/use-error-text";
+import { FormField } from "@/components/shared/form-field";
+import { FormMessage } from "@/components/shared/form-message";
+import { SubmitButton } from "@/components/shared/submit-button";
+import { useErrorText } from "@/components/shared/use-error-text";
 import { IDLE } from "@/lib/form-state";
 import { requestPasswordReset } from "@/server/auth/actions";
 

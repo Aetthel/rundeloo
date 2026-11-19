@@ -1,5 +1,17 @@
-import { ComingSoonPage } from "@/components/shared/coming-soon-page";
+import { NotebookPen } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function CompanyNotesPage() {
-  return <ComingSoonPage section="companies" />;
+import { EmptyState } from "@/components/shared/empty-state";
+
+/** Notes tab of a company: linked notes arrive with the notes editor (task 11). */
+export default async function CompanyNotesPage() {
+  const t = await getTranslations("companies.detail");
+
+  return (
+    <EmptyState
+      icon={NotebookPen}
+      title={t("notesTabTitle")}
+      description={t("notesTabBody")}
+    />
+  );
 }

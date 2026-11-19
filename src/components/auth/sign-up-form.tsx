@@ -8,11 +8,11 @@ import {
   authLinkClass,
   AuthSplitCard,
 } from "@/components/auth/auth-split-card";
-import { FormField } from "@/components/auth/form-field";
-import { FormMessage } from "@/components/auth/form-message";
+import { FormField } from "@/components/shared/form-field";
+import { FormMessage } from "@/components/shared/form-message";
 import { SocialButtons } from "@/components/auth/social-buttons";
-import { SubmitButton } from "@/components/auth/submit-button";
-import { useErrorText } from "@/components/auth/use-error-text";
+import { SubmitButton } from "@/components/shared/submit-button";
+import { useErrorText } from "@/components/shared/use-error-text";
 import { Field, FieldDescription } from "@/components/ui/field";
 import { IDLE, type FormState } from "@/lib/form-state";
 import {
