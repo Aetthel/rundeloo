@@ -5,7 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import {
-  CompanyFormSheet,
+  CompanyFormDialog,
   type CompanyFormValues,
 } from "@/components/companies/company-form";
 import { ConfirmDelete } from "@/components/shared/confirm-delete";
@@ -44,7 +44,7 @@ export function CompanyActions({
 
   return (
     <div className="flex items-center gap-2">
-      <CompanyFormSheet
+      <CompanyFormDialog
         company={company}
         trigger={
           <Button variant="outline" size="sm" className="h-9 sm:h-7">
