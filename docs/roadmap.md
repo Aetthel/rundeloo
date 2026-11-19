@@ -1,6 +1,6 @@
 # Roadmap
 
-Last updated: 2026-11-18.
+Last updated: 2026-11-19.
 
 The project follows an 8-phase methodology. One phase at a time; a phase is not left until it is closed.
 
@@ -27,7 +27,7 @@ Target launch (not final): realistic **2026-12-15** · optimistic 2026-11-20 · 
 6. ~~i18n base~~ Done (2026-11-16) on `feat/i18n-base`: `next-intl` without locale routing, locale synced from `profiles.language` in the proxy, typed messages and enum labels. The visual language switcher ships with the screens (task 9).
 7. ~~Migration~~ Done (2026-11-17) on `chore/schema-migration`: Supabase CLI 3.1.0, baseline plus phase 6 migration applied to the remote project, types regenerated. See `docs/database.md`.
 8. ~~Authentication and route protection~~ Done (2026-11-18) on `feat/auth`: sign-up, sign-in, sign-out, password recovery, screens 02–04 and reset password, `auth_hardening` migration, `security` agent. Sign-out button and language switcher ship with the app shell (task 9).
-9. **Core screens** — next. Core screens from the wireframes (`docs/screens.md`), plus `/privacy` and `/terms`. Logo from `public/brand/`, mobile bottom bar.
+9. **Core screens** — in progress. Part 1 done (2026-11-19) on `feat/app-shell`: app shell, shared states and placeholders for every app route. Next parts: applications, companies and contacts, dashboard and calendar, the rest. Core screens from the wireframes (`docs/screens.md`), plus `/privacy` and `/terms`. Logo from `public/brand/`, mobile bottom bar.
 10. **Written spec of the AI onboarding — mandatory before coding it.** Topics already known: experience, what the user is looking for, sector. May add `profiles` columns in a second migration.
 11. AI provider layer (Ollama in development), AI onboarding, notes editor (TipTap), auto-linking, weekly summary, Pro features, Stripe.
 12. Manual testing, Playwright end-to-end tests and visual consistency review on the real app.

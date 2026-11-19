@@ -53,6 +53,15 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 - **Only Alex runs migrations and remote changes.** Claude prepares the file in `supabase/migrations/`.
 - All Claude Code configuration lives in `.claude/`, with `CLAUDE.md` at the repo root.
 
+## App shell (2026-11-19)
+
+- **shadcn `Sidebar`** is the base of the shell; the design is iterated on it.
+- **One background tone** for sidebar, top bar and content (`bg-sidebar`). Only the Pro upgrade card stands out: `bg-steel` with a fixed light button, in both themes.
+- **Theme and language switchers live in the account menu.** The theme is saved in `profiles.theme` (`system` = null).
+- **Mobile:** bottom bar (Dashboard, Applications, Calendar, Notes, More); "More" opens the sidebar sheet.
+- **`DEV_PREVIEW_NO_AUTH`** allows browsing the app without signing in, only under `next dev`.
+- **`accessibility` subagent** (`.claude/agents/accessibility.md`) reviews UI branches before the PR.
+
 ## Authentication (2026-11-18)
 
 - **Email confirmation on.** Supabase's built-in SMTP is enough for development; a free production SMTP is chosen in Phase 7.

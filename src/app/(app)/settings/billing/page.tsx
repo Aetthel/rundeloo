@@ -1,3 +1,5 @@
+import { ComingSoonPage } from "@/components/shared/coming-soon-page";
+
 export default function BillingPage() {
-  return null;
+  return <ComingSoonPage section="billing" />;
 }

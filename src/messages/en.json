@@ -172,5 +172,60 @@
       "comingSoon": "Coming soon",
       "separatorSoon": "Or continue with (coming soon)"
     }
+  },
+  "nav": {
+    "groups": {
+      "workspace": "Workspace",
+      "prep": "Prep"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "applications": "Applications",
+      "companies": "Companies",
+      "calendar": "Calendar",
+      "notes": "Notes",
+      "questions": "Question bank",
+      "weeklySummary": "Weekly summary",
+      "settings": "Settings",
+      "billing": "Plan and billing"
+    },
+    "detail": "Details",
+    "more": "More",
+    "pro": "Pro",
+    "proLocked": "Pro feature",
+    "home": "Home",
+    "mainNav": "Main navigation",
+    "mobileNav": "Quick navigation",
+    "breadcrumb": "Breadcrumb",
+    "toggleSidebar": "Toggle sidebar"
+  },
+  "shell": {
+    "upgradeTitle": "Unlock AI with Pro",
+    "upgradeBody": "Interview simulator, study paths and your weekly summary.",
+    "upgradeCta": "Upgrade to Pro",
+    "proTitle": "Pro plan",
+    "proCta": "Manage plan",
+    "alerts": "Alerts",
+    "noAlerts": "You're all caught up.",
+    "account": "Account menu",
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": "Language",
+    "signOut": "Log out"
+  },
+  "states": {
+    "comingSoonTitle": "Coming soon",
+    "comingSoonBody": "This screen is being built. The navigation already works, so you can explore the rest of the app.",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We couldn't load this page. Try again in a moment.",
+    "retry": "Try again",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist or has moved.",
+    "backHome": "Go to dashboard",
+    "loading": "Loading…"
   }
 }
