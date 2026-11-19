@@ -37,6 +37,7 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-surface: var(--surface);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
@@ -125,6 +126,9 @@
   --foreground: var(--color-ink);
   --card: var(--color-white);
   --card-foreground: var(--color-ink);
+  /* Containers inside app screens (cards, tables, lists). Steel in dark, like the Pro card. */
+  --surface: var(--color-white);
+  --surface-border: var(--color-fog);
   --popover: var(--color-white);
   --popover-foreground: var(--color-ink);
   --primary: var(--color-ink);
@@ -170,6 +174,9 @@
   --foreground: var(--color-paper);
   --card: var(--color-graphite);
   --card-foreground: var(--color-paper);
+  --surface: var(--color-steel);
+  /* The dark border is steel itself: inside a surface it needs to be lighter. */
+  --surface-border: var(--color-slate);
   --popover: var(--color-graphite);
   --popover-foreground: var(--color-paper);
   --primary: var(--color-paper);
@@ -220,4 +227,14 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+/*
+ * Container inside app screens (cards, tables, lists): white in light, steel in
+ * dark (the Pro card's color). Borders and dividers inside switch to a color
+ * that stays visible on it. Use `surface`, not `bg-background`, for new screens.
+ */
+@utility surface {
+  background-color: var(--surface);
+  --border: var(--surface-border);
 }

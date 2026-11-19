@@ -28,7 +28,7 @@ export function CompanyLogo({
     <span
       aria-hidden
       className={cn(
-        "flex shrink-0 items-center justify-center rounded-lg border bg-background font-medium text-muted-foreground",
+        "flex shrink-0 items-center justify-center rounded-lg border surface font-medium text-muted-foreground",
         box,
       )}
     >

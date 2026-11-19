@@ -56,6 +56,8 @@ All tokens live in `src/app/globals.css`. Components use semantic tokens only â€
 
 **Type:** Geist (`font-sans`) for UI and in-app titles, Geist Mono (`font-mono`) for labels, statuses and numbers, Unbounded (`font-display`) loaded only in `(marketing)`. Tailwind's type scale plus `text-2xs` (11px) for section labels.
 
+**App screens (2026-11-19):** one background tone for sidebar, top bar and content (`bg-sidebar`). Every container inside a screen (cards, tables, lists, `SectionCard`) uses the **`surface`** utility: white in light, **steel in dark** (the Pro card's color, never black). `surface` also switches borders and dividers inside it to a color that stays visible (fog in light, slate in dark). The Pro upgrade card is the only element in `bg-steel` with a fixed light button. Dropdowns, sheets and dialogs keep `popover`.
+
 **Locked (Pro):** `text-locked` + lock icon + "Unlock with Pro". Never color alone.
 
 ## UI conventions

@@ -11,7 +11,7 @@ export function SectionCard({
   children: ReactNode;
 }) {
   return (
-    <section className="grid gap-3 rounded-xl border bg-background p-4">
+    <section className="grid gap-3 rounded-xl border surface p-4">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-medium">{title}</h2>
         {action}

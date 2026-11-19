@@ -39,7 +39,7 @@ export function ContactsList({
   contacts: ContactRow[];
 }) {
   return (
-    <ul className="divide-y overflow-hidden rounded-xl border bg-background">
+    <ul className="divide-y overflow-hidden rounded-xl border surface">
       {contacts.map((contact) => (
         <ContactItem key={contact.id} companyId={companyId} contact={contact} />
       ))}

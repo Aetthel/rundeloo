@@ -56,11 +56,11 @@ export function CompaniesTable({
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("search")}
           aria-label={t("searchLabel")}
-          className="bg-background pl-8"
+          className="surface pl-8"
         />
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-background">
+      <div className="overflow-hidden rounded-xl border surface">
         <Table>
           <TableHeader>
             <TableRow>

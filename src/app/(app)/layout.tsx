@@ -15,7 +15,7 @@ export default function AppLayout({
     <TooltipProvider delayDuration={0}>
       <SidebarProvider>
         <AppSidebar />
-        {/* Content sits on the sidebar's tone; cards inside stay on bg-background. */}
+        {/* Content sits on the sidebar's tone; containers inside use bg-surface. */}
         <SidebarInset className="bg-sidebar">
           <TopBar />
           {/* Bottom padding keeps content clear of the mobile bar. */}

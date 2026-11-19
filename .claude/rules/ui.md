@@ -10,6 +10,7 @@ paths:
 
 - Read `docs/design.md` before building or restyling UI, and the screen's spec in `docs/screens.md`.
 - Style only with tokens from `src/app/globals.css`. No hex values, no arbitrary colors like `bg-[#123456]`.
+- Containers inside app screens (cards, tables, lists) use the **`surface`** utility, never `bg-background`: white in light, steel in dark, with visible inner borders. The screen background is `bg-sidebar`.
 - Use **semantic** utilities (`bg-background`, `text-muted-foreground`, `border-border`, `text-status-offer`, `bg-status-offer-subtle`). The palette utilities (`bg-ink`, `text-slate`…) are for `globals.css` and rare brand moments only.
 - Never use the `dark:` variant to swap colors: tokens already switch with the theme. `dark:` is only for adjustments a token can't express.
 - A new color, size or radius becomes a token in `globals.css` first, then gets used. Check contrast in both themes: 4.5:1 for text, 3:1 for icons, borders that carry meaning and focus rings.

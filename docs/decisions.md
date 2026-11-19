@@ -65,6 +65,7 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 
 - **shadcn `Sidebar`** is the base of the shell; the design is iterated on it.
 - **One background tone** for sidebar, top bar and content (`bg-sidebar`). Only the Pro upgrade card stands out: `bg-steel` with a fixed light button, in both themes.
+- **Containers inside screens use the `surface` token** (white in light, steel in dark, never black), with lighter inner borders in dark. Applies to every future screen.
 - **Theme and language switchers live in the account menu.** The theme is saved in `profiles.theme` (`system` = null).
 - **Mobile:** bottom bar (Dashboard, Applications, Calendar, Notes, More); "More" opens the sidebar sheet.
 - **`DEV_PREVIEW_NO_AUTH`** allows browsing the app without signing in, only under `next dev`.
