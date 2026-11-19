@@ -54,7 +54,7 @@ Next.js 16.4 (App Router, TypeScript, `src/`, Turbopack) · React 19 · Tailwind
 
 - Branches from `develop`: `feat/`, `fix/`, `chore/` + kebab-case (`feat/kanban-board`).
 - Conventional Commits, imperative, lowercase: `feat(kanban): add drag and drop between columns`. Types: feat, fix, chore, refactor, docs, style, test, perf.
-- PRs into `develop` are **squash-merged** (PR title = commit message). `develop` → `main` is a **merge commit** on release (Fridays), titled `chore(release): YYYY-MM-DD`. Never squash `develop` into `main`.
+- PRs into `develop` use **Rebase and merge**: every commit of the branch lands on `develop` as is, linear history, no merge commit. So each commit message must be a clean Conventional Commit; the PR title only summarizes the branch. `develop` → `main` is a **merge commit** on release (Fridays), titled `chore(release): YYYY-MM-DD`. Never squash or rebase `develop` into `main`.
 - **No AI attribution:** no `Co-Authored-By` trailer and no "Generated with Claude Code" line in commits or PR descriptions.
 - **Small, frequent commits:** commit every change as soon as it works, however small (a style tweak, a copy fix, a test), and push the feature branch right after. One logical change per commit, never a pile of unrelated edits. Lint and tests must pass before each commit; the full build before pushing.
 

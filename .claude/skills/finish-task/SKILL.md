@@ -12,12 +12,12 @@ disable-model-invocation: true
    - `docs/roadmap.md`: mark the task done with today's date and set the next one.
    - Any doc whose content changed (`architecture.md`, `database.md`, `screens.md`, `design.md`).
    - `docs/decisions.md` if the task produced a logged decision.
-4. Show `git status` and a short summary of the diff. Ask Alex to confirm before committing.
-5. Commit with a Conventional Commit in English (imperative, lowercase), e.g. `feat(kanban): add drag and drop between columns`.
-6. Ask whether to push. If yes: `git push -u origin <branch>`.
+4. Commit the docs update like any other change (small commits are made along the way, see `CLAUDE.md` → Git conventions), then make sure `git status` is clean and the branch is pushed.
+5. Every commit on the branch lands on `develop` as is: check `git log develop..HEAD --oneline` reads as clean Conventional Commits (English, imperative, lowercase). Fix messages only on unpushed commits; never rewrite pushed history.
+6. Check `git merge-tree --write-tree origin/develop HEAD` reports no conflicts.
 7. Give Alex, ready to paste:
-   - **PR title** (same as the commit message, it becomes the squash commit).
+   - **PR title**: a Conventional Commit-style summary of the whole branch (with Rebase and merge it does not become a commit).
    - **PR description**: what changed, why, how to test it, and any **DECISIÓN REGISTRADA EN EL LOG**.
-8. Remind him: PR into `develop`, squash and merge, then `git switch develop && git pull && git branch -d <branch>`.
+8. Remind him: PR into `develop`, **Rebase and merge**, then `git switch develop && git pull && git branch -D <branch>` (`-D` because rebasing gives the commits new hashes).
 
 Never open, approve or merge the PR.
