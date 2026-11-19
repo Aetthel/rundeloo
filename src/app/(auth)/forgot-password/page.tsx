@@ -1,28 +1,10 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
-
-import { AuthCard } from "@/components/auth/auth-card";
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
 
-export default async function ForgotPasswordPage() {
-  const t = await getTranslations("auth");
-
+/** Shorter sibling of the login card: one field, slightly narrower. */
+export default function ForgotPasswordPage() {
   return (
-    <AuthCard
-      title={t("forgot.title")}
-      description={t("forgot.subtitle")}
-      footer={
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-1 underline-offset-4 hover:underline"
-        >
-          <ArrowLeft className="size-4" aria-hidden />
-          {t("forgot.back")}
-        </Link>
-      }
-    >
+    <div className="w-full max-w-sm md:max-w-3xl">
       <ForgotPasswordForm />
-    </AuthCard>
+    </div>
   );
 }

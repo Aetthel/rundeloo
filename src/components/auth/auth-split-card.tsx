@@ -28,7 +28,8 @@ export function AuthSplitCard({
   subtitle: string;
   /** Omit to render the children without a form (e.g. a confirmation message). */
   action?: (formData: FormData) => void;
-  legal?: "signIn" | "signUp";
+  /** Legal text under the card; false on screens that don't create or open an account. */
+  legal?: "signIn" | "signUp" | false;
   children: ReactNode;
 }) {
   const t = useTranslations("auth");
@@ -60,20 +61,22 @@ export function AuthSplitCard({
           <BrandPanel />
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        {t.rich(`${legal}.legal`, {
-          terms: (chunks) => (
-            <Link href="/terms" className={authLinkClass}>
-              {chunks}
-            </Link>
-          ),
-          privacy: (chunks) => (
-            <Link href="/privacy" className={authLinkClass}>
-              {chunks}
-            </Link>
-          ),
-        })}
-      </FieldDescription>
+      {legal && (
+        <FieldDescription className="px-6 text-center">
+          {t.rich(`${legal}.legal`, {
+            terms: (chunks) => (
+              <Link href="/terms" className={authLinkClass}>
+                {chunks}
+              </Link>
+            ),
+            privacy: (chunks) => (
+              <Link href="/privacy" className={authLinkClass}>
+                {chunks}
+              </Link>
+            ),
+          })}
+        </FieldDescription>
+      )}
     </div>
   );
 }
