@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { NavGroups } from "@/components/layout/nav-groups";
 import { UpgradeCard } from "@/components/layout/upgrade-card";
@@ -13,9 +14,13 @@ import {
 } from "@/components/ui/sidebar";
 import { getShellUser } from "@/server/account/queries";
 
-/** shadcn Sidebar, collapsible to icons on desktop and a sheet on mobile. */
+/**
+ * shadcn Sidebar, collapsible to icons on desktop and a sheet on mobile.
+ * The user's plan is read behind Suspense so navigation stays instant: the menu
+ * shows at once (locks assumed, as for free users) and the plan arrives after.
+ */
 export async function AppSidebar() {
-  const [t, user] = await Promise.all([getTranslations("nav"), getShellUser()]);
+  const t = await getTranslations("nav");
 
   return (
     <Sidebar collapsible="icon" aria-label={t("mainNav")}>
@@ -62,12 +67,26 @@ export async function AppSidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent>
-        <NavGroups isPro={user.isPro} />
+        <Suspense fallback={<NavGroups isPro={false} />}>
+          <UserNavGroups />
+        </Suspense>
       </SidebarContent>
       <SidebarFooter>
-        <UpgradeCard isPro={user.isPro} />
+        <Suspense fallback={null}>
+          <UserUpgradeCard />
+        </Suspense>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
+}
+
+async function UserNavGroups() {
+  const { isPro } = await getShellUser();
+  return <NavGroups isPro={isPro} />;
+}
+
+async function UserUpgradeCard() {
+  const { isPro } = await getShellUser();
+  return <UpgradeCard isPro={isPro} />;
 }
