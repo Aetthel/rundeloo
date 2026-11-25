@@ -64,9 +64,7 @@ export function CompaniesTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-center">
-                {t("columns.company")}
-              </TableHead>
+              <TableHead>{t("columns.company")}</TableHead>
               <TableHead className="hidden md:table-cell">
                 {t("columns.industry")}
               </TableHead>
