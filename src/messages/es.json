@@ -254,8 +254,6 @@
     },
     "detail": {
       "edit": "Editar",
-      "more": "Más acciones",
-      "delete": "Borrar empresa",
       "visitWebsite": "Visitar web",
       "tabs": {
         "applications": "Candidaturas",
@@ -279,7 +277,8 @@
       "viewAll": "Ver todos",
       "notesTabTitle": "Las notas están en camino",
       "notesTabBody": "Las notas vinculadas a esta empresa llegarán con el editor de notas.",
-      "opensInNewTab": " (se abre en una pestaña nueva)"
+      "opensInNewTab": " (se abre en una pestaña nueva)",
+      "deleteShort": "Borrar"
     },
     "form": {
       "createTitle": "Añadir empresa",

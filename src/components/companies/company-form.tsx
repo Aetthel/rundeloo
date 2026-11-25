@@ -5,7 +5,7 @@ import { type ReactNode, useActionState } from "react";
 
 import { FormField, FormTextarea } from "@/components/shared/form-field";
 import { FormMessage } from "@/components/shared/form-message";
-import { FormSheet } from "@/components/shared/form-sheet";
+import { FormDialog } from "@/components/shared/form-dialog";
 import { SubmitButton } from "@/components/shared/submit-button";
 import { useErrorText } from "@/components/shared/use-error-text";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,8 @@ export type CompanyFormValues = {
   notes: string | null;
 };
 
-/** "Add company" or "Edit" button that opens the company form in a side panel. */
-export function CompanyFormSheet({
+/** "Add company" or "Edit" button that opens the company form in a centered popup. */
+export function CompanyFormDialog({
   company,
   trigger,
 }: {
@@ -32,13 +32,13 @@ export function CompanyFormSheet({
   const t = useTranslations("companies.form");
 
   return (
-    <FormSheet
+    <FormDialog
       trigger={trigger}
       title={company ? t("editTitle") : t("createTitle")}
       description={t("description")}
     >
       {(close) => <CompanyForm company={company} onSaved={close} />}
-    </FormSheet>
+    </FormDialog>
   );
 }
 

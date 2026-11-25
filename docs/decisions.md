@@ -42,7 +42,7 @@ Binding decisions. This file is the single source of truth (the Notion Decision 
 ## Git
 
 - `main` (production) and `develop` (integration, **default branch** on GitHub). Branches `feat/`, `fix/`, `chore/` from `develop`.
-- **Squash merge into `develop`; merge commit from `develop` into `main`** (never squash into `main`). Releases on Fridays.
+- **Rebase and merge into `develop`** (2026-11-19, replaces squash merge): every small commit reaches the default branch and counts in GitHub's activity graph. **Merge commit from `develop` into `main`** (never squash or rebase into `main`). Releases on Fridays.
 - Rulesets on both branches: PR required with 0 approvals, no force push, no deletion. Bypass list empty.
 - Conventional Commits in English.
 - **In Vercel (Phase 7), set `main` as Production Branch explicitly**, or it would deploy `develop`.

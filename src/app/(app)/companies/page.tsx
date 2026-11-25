@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
 import { CompaniesTable } from "@/components/companies/companies-table";
-import { CompanyFormSheet } from "@/components/companies/company-form";
+import { CompanyFormDialog } from "@/components/companies/company-form";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ export default async function CompaniesPage() {
 
 function AddCompanyButton({ label }: { label: string }) {
   return (
-    <CompanyFormSheet
+    <CompanyFormDialog
       trigger={
         <Button>
           <Plus aria-hidden />

@@ -254,8 +254,6 @@
     },
     "detail": {
       "edit": "Edit",
-      "more": "More actions",
-      "delete": "Delete company",
       "visitWebsite": "Visit website",
       "tabs": {
         "applications": "Applications",
@@ -279,7 +277,8 @@
       "viewAll": "View all",
       "notesTabTitle": "Notes are coming",
       "notesTabBody": "Linked notes for this company arrive with the notes editor.",
-      "opensInNewTab": " (opens in a new tab)"
+      "opensInNewTab": " (opens in a new tab)",
+      "deleteShort": "Delete"
     },
     "form": {
       "createTitle": "Add company",

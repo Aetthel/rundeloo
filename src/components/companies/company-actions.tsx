@@ -1,22 +1,16 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 
 import {
-  CompanyFormSheet,
+  CompanyFormDialog,
   type CompanyFormValues,
 } from "@/components/companies/company-form";
 import { ConfirmDelete } from "@/components/shared/confirm-delete";
 import { useErrorText } from "@/components/shared/use-error-text";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { deleteCompany } from "@/server/companies/actions";
 
 /** Edit and delete buttons in the company header. */
@@ -33,7 +27,8 @@ export function CompanyActions({
   const errorText = useErrorText("companies.errors");
   const format = useFormatter();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const moreRef = useRef<HTMLButtonElement>(null);
+  // Focus goes back to the Delete button if the user cancels.
+  const deleteRef = useRef<HTMLButtonElement>(null);
 
   // "2 applications and 1 contact", only naming what exists.
   const items = [
@@ -44,7 +39,7 @@ export function CompanyActions({
 
   return (
     <div className="flex items-center gap-2">
-      <CompanyFormSheet
+      <CompanyFormDialog
         company={company}
         trigger={
           <Button variant="outline" size="sm" className="h-9 sm:h-7">
@@ -53,32 +48,21 @@ export function CompanyActions({
           </Button>
         }
       />
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            ref={moreRef}
-            variant="outline"
-            size="icon-sm"
-            className="size-9 sm:size-7"
-            aria-label={t("detail.more")}
-          >
-            <MoreHorizontal aria-hidden />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            variant="destructive"
-            onSelect={() => setConfirmOpen(true)}
-          >
-            <Trash2 aria-hidden />
-            {t("detail.delete")}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* Destructive but never immediate: it only opens the confirmation popup. */}
+      <Button
+        ref={deleteRef}
+        variant="destructive"
+        size="sm"
+        className="h-9 sm:h-7"
+        onClick={() => setConfirmOpen(true)}
+      >
+        <Trash2 aria-hidden />
+        {t("detail.deleteShort")}
+      </Button>
       <ConfirmDelete
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        returnFocusTo={moreRef}
+        returnFocusTo={deleteRef}
         title={t("delete.title", { name: company.name })}
         description={
           items.length
