@@ -403,18 +403,22 @@ export function previewCompanies(locale: Locale): CompanyDetail[] {
       created_at: created,
       updated_at: ago(lastHours),
       applications,
-      contacts: sample.contacts.map((contact) => ({
-        id: sampleId(2, ++contactN),
-        company_id: id,
-        full_name: contact.name,
-        contact_role: contact.role,
-        email: contact.email ?? null,
-        phone: contact.phone ?? null,
-        linkedin_url: contact.linkedin ?? null,
-        notes: contact.notes ? pick(contact.notes) : null,
-        created_at: created,
-        updated_at: created,
-      })),
+      contacts: sample.contacts.map((contact, i) => {
+        // Contacts come in over the following days, not all at once.
+        const added = ago(sample.addedDaysAgo * 24 - (i + 1) * 30);
+        return {
+          id: sampleId(2, ++contactN),
+          company_id: id,
+          full_name: contact.name,
+          contact_role: contact.role,
+          email: contact.email ?? null,
+          phone: contact.phone ?? null,
+          linkedin_url: contact.linkedin ?? null,
+          notes: contact.notes ? pick(contact.notes) : null,
+          created_at: added,
+          updated_at: added,
+        };
+      }),
     };
   });
 }
