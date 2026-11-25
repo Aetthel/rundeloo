@@ -3,6 +3,7 @@ import type { Database } from "@/types/database";
 export type ApplicationStatus =
   Database["public"]["Enums"]["application_status"];
 export type ContactRole = Database["public"]["Enums"]["contact_role"];
+export type WorkMode = Database["public"]["Enums"]["work_mode"];
 
 export const MAX_QUESTIONS_PER_SIMULATION = 5;
 

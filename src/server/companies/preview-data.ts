@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { Locale } from "@/i18n/config";
-import type { ApplicationStatus, ContactRole } from "@/lib/constants";
+import type { ApplicationStatus, ContactRole, WorkMode } from "@/lib/constants";
 import type { CompanyDetail } from "@/server/companies/queries";
 
 // Sample companies for the dev-only UI preview (no session, no database).
@@ -370,7 +370,131 @@ const SAMPLE: SampleCompany[] = [
     applications: [],
     contacts: [],
   },
+  {
+    name: "N26",
+    website: "https://n26.com",
+    industry: ["Banking", "Banca"],
+    location: ["Remote · Europe", "Remoto · Europa"],
+    addedDaysAgo: 5,
+    applications: [
+      [["Frontend Engineer", "Ingeniero frontend"], "applied", 40],
+      [["Web Platform Engineer", "Ingeniero de plataforma web"], "saved", 15],
+    ],
+    contacts: [
+      {
+        name: "Hannah Weber",
+        role: "recruiter",
+        email: "hannah.weber@n26.com",
+        linkedin: "https://linkedin.com/in/hannahweber",
+      },
+    ],
+  },
+  {
+    name: "TravelPerk",
+    website: "https://travelperk.com",
+    industry: ["Travel tech", "Viajes de empresa"],
+    location: ["Hybrid · Barcelona", "Híbrido · Barcelona"],
+    addedDaysAgo: 16,
+    applications: [
+      [["Frontend Developer", "Desarrollador frontend"], "applied", 90],
+      [
+        [
+          "Software Engineer, Integrations",
+          "Ingeniero de software, Integraciones",
+        ],
+        "rejected",
+        260,
+      ],
+    ],
+    contacts: [],
+  },
+  {
+    name: "Idealista",
+    website: "https://idealista.com",
+    industry: ["Real estate", "Inmobiliaria"],
+    location: ["Hybrid · Madrid", "Híbrido · Madrid"],
+    addedDaysAgo: 8,
+    applications: [
+      [["React Developer", "Desarrollador React"], "applied", 130],
+    ],
+    contacts: [
+      { name: "Carmen Ruiz", role: "recruiter", phone: "+34 915 555 210" },
+    ],
+  },
+  {
+    name: "Holded",
+    website: "https://holded.com",
+    industry: ["Business software", "Software de gestión"],
+    location: ["On-site · Barcelona", "Presencial · Barcelona"],
+    addedDaysAgo: 3,
+    applications: [
+      [
+        ["Junior Software Engineer", "Ingeniero de software junior"],
+        "applied",
+        55,
+      ],
+      [["Frontend Engineer", "Ingeniero frontend"], "saved", 8],
+    ],
+    contacts: [],
+  },
+  {
+    name: "Personio",
+    website: "https://personio.com",
+    industry: ["HR software", "Software de RR. HH."],
+    location: ["Remote · Spain", "Remoto · España"],
+    addedDaysAgo: 28,
+    applications: [
+      [
+        ["Frontend Engineer, Growth", "Ingeniero frontend, Growth"],
+        "on_hold",
+        170,
+      ],
+      [["Software Engineer", "Ingeniero de software"], "rejected", 520],
+    ],
+    contacts: [
+      {
+        name: "Jonas Becker",
+        role: "recruiter",
+        email: "jonas.becker@personio.com",
+        notes: [
+          "Hiring freeze until January, will reach out.",
+          "Congelación de contrataciones hasta enero, me escribirá.",
+        ],
+      },
+    ],
+  },
+  {
+    name: "Miro",
+    website: "https://miro.com",
+    industry: ["Collaboration", "Colaboración"],
+    location: ["Hybrid · Amsterdam", "Híbrido · Ámsterdam"],
+    addedDaysAgo: 7,
+    applications: [
+      [
+        ["Frontend Engineer, Canvas", "Ingeniero frontend, Canvas"],
+        "applied",
+        22,
+      ],
+      [
+        [
+          "Developer Experience Engineer",
+          "Ingeniero de experiencia de desarrollo",
+        ],
+        "saved",
+        33,
+      ],
+    ],
+    contacts: [],
+  },
 ];
+
+/** Work mode read from the sample location, which starts with it in English. */
+function workModeOf(location: Text): WorkMode | null {
+  if (location[0].startsWith("Remote")) return "remote";
+  if (location[0].startsWith("Hybrid")) return "hybrid";
+  if (location[0].startsWith("On-site")) return "onsite";
+  return null;
+}
 
 const USER_ID = "00000000-0000-4000-8000-0000000000ff";
 const HOUR = 3_600_000;
@@ -392,8 +516,12 @@ export function previewCompanies(locale: Locale): CompanyDetail[] {
     const applications = sample.applications.map(
       ([role, status, hours, jobUrl]) => {
         const n = ++appN;
+        // Deterministic variety: some open positions have a deadline ahead,
+        // and anything past "saved" was sent a few days before its last move.
+        const open = status === "saved" || status === "applied";
         return {
           id: sampleId(1, n),
+          company_id: id,
           role_title: pick(role),
           status,
           status_changed_at: ago(hours),
@@ -401,6 +529,17 @@ export function previewCompanies(locale: Locale): CompanyDetail[] {
             jobUrl === undefined
               ? `https://www.linkedin.com/jobs/view/${4_100_000_000 + n * 7919}`
               : jobUrl,
+          work_mode: workModeOf(sample.location),
+          applied_at:
+            status === "saved"
+              ? null
+              : ago(status === "applied" ? hours : hours + 24 * ((n % 5) + 3)),
+          deadline:
+            open && n % 2 === 0
+              ? new Date(Date.now() + ((n % 9) + 2) * 24 * HOUR)
+                  .toISOString()
+                  .slice(0, 10)
+              : null,
         };
       },
     );
