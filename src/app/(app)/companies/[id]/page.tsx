@@ -11,6 +11,7 @@ import { PIPELINE_PRIORITY } from "@/lib/constants";
 import { loadCompanyOr404 } from "@/server/companies/load";
 
 const SIDE_CONTACTS = 3;
+const ACTIVITY_ITEMS = 6;
 
 /**
  * Applications tab of a company (default tab). Two containers only: the main
@@ -27,10 +28,11 @@ export default function CompanyOverviewPage({
 }
 
 async function Overview({ params }: { params: Promise<{ id: string }> }) {
-  const [company, t, tRole, format] = await Promise.all([
+  const [company, t, tRole, tStatus, format] = await Promise.all([
     loadCompanyOr404(params),
     getTranslations("companies.detail"),
     getTranslations("enums.contactRole"),
+    getTranslations("enums.applicationStatus"),
     getFormatter(),
   ]);
 
@@ -41,6 +43,27 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
   );
   const best = bestStage(applications.map((a) => a.status));
   const now = new Date();
+  // Activity derived from data we already have, newest first.
+  const activity = [
+    ...company.applications
+      .filter((app) => app.status_changed_at)
+      .map((app) => ({
+        id: `app-${app.id}`,
+        at: app.status_changed_at as string,
+        text: t("activityStatus", {
+          role: app.role_title,
+          status: tStatus(app.status),
+        }),
+      })),
+    ...company.contacts.map((contact) => ({
+      id: `contact-${contact.id}`,
+      at: contact.created_at,
+      text: t("activityContact", { name: contact.full_name }),
+    })),
+    { id: "company", at: company.created_at, text: t("activityCompany") },
+  ]
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .slice(0, ACTIVITY_ITEMS);
   const muted = (text: string) => (
     <p className="text-sm text-muted-foreground">{text}</p>
   );
@@ -109,6 +132,24 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
             ))}
           </ul>
         )}
+
+        <div className="border-t p-4">
+          <h2 className="mb-3 text-sm font-medium">{t("activity")}</h2>
+          <ol className="grid gap-3">
+            {activity.map((event) => (
+              <li key={event.id} className="flex items-baseline gap-3 text-sm">
+                <span
+                  className="size-1.5 shrink-0 -translate-y-px rounded-full bg-muted-foreground/60"
+                  aria-hidden
+                />
+                <span className="min-w-0 flex-1 truncate">{event.text}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {format.relativeTime(new Date(event.at), now)}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       <aside
