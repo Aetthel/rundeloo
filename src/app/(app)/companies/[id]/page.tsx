@@ -1,11 +1,13 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { type ReactNode, Suspense } from "react";
 
 import { ActivityList } from "@/components/companies/activity-list";
+import { isLinkedinUrl, LinkedinIcon } from "@/components/shared/linkedin-icon";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { bestStage, displayHost, initialsOf } from "@/lib/companies";
 import { PIPELINE_PRIORITY } from "@/lib/constants";
@@ -121,6 +123,35 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
                     )}
                   </div>
                   <StatusBadge status={app.status} />
+                  {app.job_url ? (
+                    // Above the stretched link, so it opens the posting, not the application.
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="relative z-10 size-9 sm:size-7"
+                      asChild
+                    >
+                      <a
+                        href={app.job_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={
+                          isLinkedinUrl(app.job_url)
+                            ? t("viewJobLinkedin", { role: app.role_title })
+                            : t("viewJob", { role: app.role_title })
+                        }
+                      >
+                        {isLinkedinUrl(app.job_url) ? (
+                          <LinkedinIcon />
+                        ) : (
+                          <ExternalLink aria-hidden />
+                        )}
+                      </a>
+                    </Button>
+                  ) : (
+                    // Same width as the icon, so statuses stay aligned across rows.
+                    <span className="size-9 shrink-0 sm:size-7" aria-hidden />
+                  )}
                   <ChevronRight
                     className="size-4 text-muted-foreground"
                     aria-hidden
