@@ -105,7 +105,12 @@ function ContactForm({
   const fieldError = (name: string) => errorText(error?.fieldErrors?.[name]);
 
   return (
-    <form action={formAction} className="grid gap-4" noValidate>
+    <form
+      action={formAction}
+      className="grid gap-4"
+      autoComplete="off"
+      noValidate
+    >
       <FormMessage message={errorText(error?.error)} />
       <FormField
         name="fullName"
