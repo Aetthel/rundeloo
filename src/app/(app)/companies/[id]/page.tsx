@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { type ReactNode, Suspense } from "react";
 
+import { ActivityList } from "@/components/companies/activity-list";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,7 +12,6 @@ import { PIPELINE_PRIORITY } from "@/lib/constants";
 import { loadCompanyOr404 } from "@/server/companies/load";
 
 const SIDE_CONTACTS = 3;
-const ACTIVITY_ITEMS = 6;
 
 /**
  * Applications tab of a company (default tab). Two containers only: the main
@@ -61,9 +61,7 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
       text: t("activityContact", { name: contact.full_name }),
     })),
     { id: "company", at: company.created_at, text: t("activityCompany") },
-  ]
-    .sort((a, b) => b.at.localeCompare(a.at))
-    .slice(0, ACTIVITY_ITEMS);
+  ].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
   const muted = (text: string) => (
     <p className="text-sm text-muted-foreground">{text}</p>
   );
@@ -133,23 +131,14 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
           </ul>
         )}
 
-        <div className="border-t p-4">
-          <h2 className="mb-3 text-sm font-medium">{t("activity")}</h2>
-          <ol className="grid gap-3">
-            {activity.map((event) => (
-              <li key={event.id} className="flex items-baseline gap-3 text-sm">
-                <span
-                  className="size-1.5 shrink-0 -translate-y-px rounded-full bg-muted-foreground/60"
-                  aria-hidden
-                />
-                <span className="min-w-0 flex-1 truncate">{event.text}</span>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {format.relativeTime(new Date(event.at), now)}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </div>
+        <ActivityList
+          title={t("activity")}
+          events={activity.map((event) => ({
+            id: event.id,
+            text: event.text,
+            when: format.relativeTime(new Date(event.at), now),
+          }))}
+        />
       </section>
 
       <aside
