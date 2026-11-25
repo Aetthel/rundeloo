@@ -31,6 +31,9 @@ const DAY = 86_400_000;
 /** Deadlines this close are highlighted. */
 const URGENT_DAYS = 3;
 
+// Drop-down menus open below the trigger and scroll past ~8 options.
+const MENU = { position: "popper", className: "max-h-72" } as const;
+
 type AppliedRange = "any" | "last7" | "last30" | "older";
 
 // Full class names so Tailwind can see them.
@@ -68,8 +71,8 @@ export function ApplicationsBoard({
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
 
   const companies = useMemo(() => {
-    const byId = new Map(cards.map((c) => [c.company.id, c.company.name]));
-    return [...byId].sort((a, b) => a[1].localeCompare(b[1]));
+    const byId = new Map(cards.map((c) => [c.company.id, c.company]));
+    return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
   }, [cards]);
 
   const filtered = cards.filter((card) => {
@@ -129,11 +132,16 @@ export function ApplicationsBoard({
           >
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent {...MENU}>
             <SelectItem value="all">{t("filters.allCompanies")}</SelectItem>
-            {companies.map(([id, name]) => (
-              <SelectItem key={id} value={id}>
-                {name}
+            {companies.map((company) => (
+              <SelectItem key={company.id} value={company.id}>
+                <CompanyLogo
+                  name={company.name}
+                  logo={company.logo}
+                  size="xs"
+                />
+                <span className="truncate">{company.name}</span>
               </SelectItem>
             ))}
           </SelectContent>
@@ -148,7 +156,7 @@ export function ApplicationsBoard({
           >
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent {...MENU}>
             <SelectItem value="all">{t("filters.allModes")}</SelectItem>
             {WORK_MODES.map((value) => (
               <SelectItem key={value} value={value}>
@@ -167,7 +175,7 @@ export function ApplicationsBoard({
           >
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent {...MENU}>
             <SelectItem value="any">{t("filters.anyDate")}</SelectItem>
             <SelectItem value="last7">{t("filters.last7")}</SelectItem>
             <SelectItem value="last30">{t("filters.last30")}</SelectItem>
