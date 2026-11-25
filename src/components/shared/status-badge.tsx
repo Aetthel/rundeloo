@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 
 // Full class names so Tailwind can see them; tokens from globals.css (4.5:1 per theme).
 const STATUS_CLASS: Record<ApplicationStatus, string> = {
-  saved: "bg-status-saved-subtle text-status-saved",
-  applied: "bg-status-applied-subtle text-status-applied",
-  interview: "bg-status-interview-subtle text-status-interview",
-  offer: "bg-status-offer-subtle text-status-offer",
-  on_hold: "bg-status-on-hold-subtle text-status-on-hold",
-  rejected: "bg-status-rejected-subtle text-status-rejected",
+  saved: "text-status-saved",
+  applied: "text-status-applied",
+  interview: "text-status-interview",
+  offer: "text-status-offer",
+  on_hold: "text-status-on-hold",
+  rejected: "text-status-rejected",
 };
 
 const DOT_CLASS: Record<ApplicationStatus, string> = {
@@ -22,7 +22,7 @@ const DOT_CLASS: Record<ApplicationStatus, string> = {
   rejected: "bg-status-rejected",
 };
 
-/** Application status pill: dot + translated label, never color alone. */
+/** Application status: colored dot + translated label, no container, never color alone. */
 export function StatusBadge({
   status,
   className,
@@ -35,7 +35,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-xs font-medium whitespace-nowrap",
+        "inline-flex items-center gap-1.5 font-mono text-xs font-medium whitespace-nowrap",
         STATUS_CLASS[status],
         className,
       )}
