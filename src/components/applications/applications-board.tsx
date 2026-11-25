@@ -294,7 +294,7 @@ function BoardCard({
     : null;
 
   return (
-    <li className="relative grid gap-2 rounded-lg border surface p-3 transition-colors hover:border-foreground/25">
+    <li className="relative isolate grid gap-2 rounded-lg border surface p-3 transition-colors hover:border-foreground/25">
       <div className="flex min-w-0 items-center gap-2">
         <CompanyLogo
           name={card.company.name}

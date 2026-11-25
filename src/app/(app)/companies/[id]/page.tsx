@@ -101,7 +101,7 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
         ) : (
           <ul className="divide-y border-t">
             {applications.map((app) => (
-              <li key={app.id} className="relative">
+              <li key={app.id} className="relative isolate">
                 <div className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-muted/50">
                   <div className="grid min-w-0 flex-1 gap-0.5">
                     {/* Stretched link: the whole row is clickable, reached once by keyboard. */}
