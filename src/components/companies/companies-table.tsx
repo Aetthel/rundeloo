@@ -90,7 +90,7 @@ export function CompaniesTable({
             {visible.map((company) => (
               <TableRow key={company.id} className="relative">
                 <TableCell>
-                  <div className="flex items-center justify-center gap-3">
+                  <div className="flex items-center gap-3">
                     <CompanyLogo name={company.name} logo={company.logo} />
                     {/* The stretched link makes the whole row clickable, keyboard reaches it once. */}
                     <Link
