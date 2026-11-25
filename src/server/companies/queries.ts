@@ -88,6 +88,7 @@ export type CompanyDetail = CompanyRow & {
     role_title: string;
     status: ApplicationStatus;
     status_changed_at: string | null;
+    job_url: string | null;
   }[];
   contacts: ContactRow[];
 };
@@ -107,7 +108,7 @@ export const getCompany = cache(
     const { data, error } = await supabase
       .from("companies")
       .select(
-        "*, applications(id, role_title, status, status_changed_at), contacts(*)",
+        "*, applications(id, role_title, status, status_changed_at, job_url), contacts(*)",
       )
       .eq("id", id)
       .order("full_name", { referencedTable: "contacts" })

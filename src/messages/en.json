@@ -267,6 +267,8 @@
       "bestStage": "Best stage",
       "notScheduled": "Not scheduled",
       "updatedAgo": "Updated {time}",
+      "viewJobLinkedin": "{role} on LinkedIn (opens in a new tab)",
+      "viewJob": "{role} job posting (opens in a new tab)",
       "summary": "Company summary",
       "activity": "Recent activity",
       "activityStatus": "{role} moved to {status}",

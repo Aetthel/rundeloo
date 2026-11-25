@@ -12,10 +12,12 @@ import type { CompanyDetail } from "@/server/companies/queries";
 /** [English, Spanish] */
 type Text = readonly [string, string];
 
+/** jobUrl defaults to a LinkedIn posting; a string overrides it, null means no link. */
 type SampleApplication = readonly [
   role: Text,
   status: ApplicationStatus,
   hoursAgo: number,
+  jobUrl?: string | null,
 ];
 
 type SampleContact = {
@@ -105,6 +107,7 @@ const SAMPLE: SampleCompany[] = [
         ["Backend Engineer, Billing", "Ingeniero backend, Billing"],
         "rejected",
         300,
+        "https://stripe.com/jobs",
       ],
     ],
     contacts: [
@@ -249,7 +252,12 @@ const SAMPLE: SampleCompany[] = [
         "interview",
         26,
       ],
-      [["Junior Web Developer", "Desarrollador web junior"], "rejected", 400],
+      [
+        ["Junior Web Developer", "Desarrollador web junior"],
+        "rejected",
+        400,
+        null,
+      ],
       [
         ["Frontend Engineer, Partners", "Ingeniero frontend, Partners"],
         "applied",
@@ -381,12 +389,21 @@ export function previewCompanies(locale: Locale): CompanyDetail[] {
   return SAMPLE.map((sample, index) => {
     const id = sampleId(0, index + 1);
     const created = ago(sample.addedDaysAgo * 24);
-    const applications = sample.applications.map(([role, status, hours]) => ({
-      id: sampleId(1, ++appN),
-      role_title: pick(role),
-      status,
-      status_changed_at: ago(hours),
-    }));
+    const applications = sample.applications.map(
+      ([role, status, hours, jobUrl]) => {
+        const n = ++appN;
+        return {
+          id: sampleId(1, n),
+          role_title: pick(role),
+          status,
+          status_changed_at: ago(hours),
+          job_url:
+            jobUrl === undefined
+              ? `https://www.linkedin.com/jobs/view/${4_100_000_000 + n * 7919}`
+              : jobUrl,
+        };
+      },
+    );
     const lastHours = Math.min(
       sample.addedDaysAgo * 24,
       ...sample.applications.map(([, , hours]) => hours),

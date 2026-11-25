@@ -267,6 +267,8 @@
       "bestStage": "Mejor etapa",
       "notScheduled": "Sin programar",
       "updatedAgo": "Actualizada {time}",
+      "viewJobLinkedin": "{role} en LinkedIn (se abre en una pestaña nueva)",
+      "viewJob": "Oferta de {role} (se abre en una pestaña nueva)",
       "summary": "Resumen de la empresa",
       "activity": "Actividad reciente",
       "activityStatus": "{role} pasó a {status}",
