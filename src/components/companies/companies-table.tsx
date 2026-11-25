@@ -52,6 +52,7 @@ export function CompaniesTable({
         />
         <Input
           type="search"
+          autoComplete="off"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("search")}

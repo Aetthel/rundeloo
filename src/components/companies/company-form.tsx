@@ -70,7 +70,12 @@ function CompanyForm({
   const fieldError = (name: string) => errorText(error?.fieldErrors?.[name]);
 
   return (
-    <form action={formAction} className="grid gap-4" noValidate>
+    <form
+      action={formAction}
+      className="grid gap-4"
+      autoComplete="off"
+      noValidate
+    >
       <FormMessage message={errorText(error?.error)} />
       <FormField
         name="name"
@@ -86,7 +91,7 @@ function CompanyForm({
         label={t("website")}
         placeholder={t("websitePlaceholder")}
         inputMode="url"
-        autoComplete="url"
+        autoComplete="off"
         defaultValue={value("website")}
         error={fieldError("website")}
       />
