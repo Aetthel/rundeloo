@@ -283,7 +283,6 @@
     "form": {
       "createTitle": "Añadir empresa",
       "editTitle": "Editar empresa",
-      "description": "Solo el nombre es obligatorio.",
       "name": "Nombre",
       "namePlaceholder": "Acme",
       "website": "Web",
@@ -345,6 +344,9 @@
     },
     "errors": {
       "nameRequired": "Escribe un nombre.",
+      "websiteRequired": "Escribe la web de la empresa.",
+      "industryRequired": "Escribe el sector.",
+      "locationRequired": "Escribe la ubicación.",
       "tooLong": "Es demasiado largo.",
       "invalidWebsite": "Escribe una web válida, como acme.com.",
       "invalidEmail": "Escribe un email válido.",

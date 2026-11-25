@@ -4,9 +4,9 @@ import { companySchema, contactSchema } from "@/lib/validations/company";
 
 const company = {
   name: "Acme",
-  website: "",
-  industry: "",
-  location: "",
+  website: "acme.com",
+  industry: "Fintech",
+  location: "Madrid",
   notes: "",
 };
 
@@ -25,25 +25,21 @@ const firstError = (result: {
 }) => (result.success ? null : result.error?.issues[0]?.message);
 
 describe("companySchema", () => {
-  it("turns empty optional fields into null", () => {
-    const result = companySchema.parse(company);
-    expect(result).toEqual({
+  it("normalizes the website and turns empty notes into null", () => {
+    expect(companySchema.parse(company)).toEqual({
       name: "Acme",
-      website: null,
-      industry: null,
-      location: null,
+      website: "https://acme.com",
+      industry: "Fintech",
+      location: "Madrid",
       notes: null,
     });
   });
 
-  it("normalizes the website", () => {
-    expect(
-      companySchema.parse({ ...company, website: "acme.com" }).website,
-    ).toBe("https://acme.com");
-  });
-
   it.each([
     [{ ...company, name: " " }, "nameRequired"],
+    [{ ...company, website: " " }, "websiteRequired"],
+    [{ ...company, industry: "" }, "industryRequired"],
+    [{ ...company, location: "" }, "locationRequired"],
     [{ ...company, website: "javascript:alert(1)" }, "invalidWebsite"],
     [{ ...company, name: "x".repeat(121) }, "tooLong"],
   ])("rejects %o with %s", (input, message) => {

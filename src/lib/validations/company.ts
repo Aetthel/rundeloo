@@ -6,6 +6,9 @@ import { CONTACT_ROLES } from "@/lib/constants";
 // Error messages are i18n keys under "companies.errors".
 
 /** Empty strings from the form become null, so optional columns stay NULL. */
+const requiredText = (max: number, required: string) =>
+  z.string().trim().min(1, required).max(max, "tooLong");
+
 const optionalText = (max: number) =>
   z
     .string()
@@ -20,13 +23,16 @@ export const companySchema = z.strictObject({
     .trim()
     .max(300, "tooLong")
     .transform((value, ctx) => {
-      if (!value) return null;
+      if (!value) {
+        ctx.addIssue({ code: "custom", message: "websiteRequired" });
+        return z.NEVER;
+      }
       const url = normalizeWebsite(value);
       if (!url) ctx.addIssue({ code: "custom", message: "invalidWebsite" });
-      return url;
+      return url ?? z.NEVER;
     }),
-  industry: optionalText(80),
-  location: optionalText(120),
+  industry: requiredText(80, "industryRequired"),
+  location: requiredText(120, "locationRequired"),
   notes: optionalText(5000),
 });
 

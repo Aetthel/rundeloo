@@ -35,7 +35,6 @@ export function CompanyFormDialog({
     <FormDialog
       trigger={trigger}
       title={company ? t("editTitle") : t("createTitle")}
-      description={t("description")}
     >
       {(close) => <CompanyForm company={company} onSaved={close} />}
     </FormDialog>
@@ -88,6 +87,7 @@ function CompanyForm({
       />
       <FormField
         name="website"
+        required
         label={t("website")}
         placeholder={t("websitePlaceholder")}
         inputMode="url"
@@ -98,6 +98,7 @@ function CompanyForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField
           name="industry"
+          required
           label={t("industry")}
           placeholder={t("industryPlaceholder")}
           maxLength={80}
@@ -106,6 +107,7 @@ function CompanyForm({
         />
         <FormField
           name="location"
+          required
           label={t("location")}
           placeholder={t("locationPlaceholder")}
           maxLength={120}
