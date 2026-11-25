@@ -119,7 +119,7 @@ export const getCompany = cache(
 );
 
 /** Preview sample data in the UI language. */
-async function previewForLocale() {
+export async function previewForLocale() {
   const locale = await getLocale();
   return previewCompanies(isLocale(locale) ? locale : "en");
 }

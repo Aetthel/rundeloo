@@ -229,6 +229,35 @@
     "backHome": "Ir al dashboard",
     "loading": "Cargando…"
   },
+  "applications": {
+    "description": "Todas las candidaturas que sigues, de guardada a oferta.",
+    "total": "{count, plural, one {# candidatura} other {# candidaturas}}",
+    "search": "Buscar puesto o empresa",
+    "searchLabel": "Buscar candidaturas por puesto o empresa",
+    "filters": {
+      "company": "Empresa",
+      "allCompanies": "Todas las empresas",
+      "mode": "Modalidad",
+      "allModes": "Cualquier modalidad",
+      "applied": "Fecha de envío",
+      "anyDate": "Cualquier fecha",
+      "last7": "Últimos 7 días",
+      "last30": "Últimos 30 días",
+      "older": "Hace más de 30 días",
+      "clear": "Quitar filtros"
+    },
+    "board": {
+      "label": "Tablero de candidaturas",
+      "column": "{stage}, {count, plural, one {# candidatura} other {# candidaturas}}",
+      "showMore": "Ver {count} más",
+      "showLess": "Ver menos",
+      "empty": "Aún no hay nada",
+      "noResults": "Ninguna candidatura coincide con estos filtros.",
+      "closes": "Cierra {time}",
+      "job": "Oferta de {role} (se abre en una pestaña nueva)",
+      "jobLinkedin": "{role} en LinkedIn (se abre en una pestaña nueva)"
+    }
+  },
   "companies": {
     "list": {
       "description": "Todas las empresas a las que aplicas, con sus contactos.",
