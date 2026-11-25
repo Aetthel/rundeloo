@@ -60,6 +60,17 @@ All tokens live in `src/app/globals.css`. Components use semantic tokens only �
 
 **Locked (Pro):** `text-locked` + lock icon + "Unlock with Pro". Never color alone.
 
+## Layout and use of space (2026-11-25, Alex's rule for every screen)
+
+Space is designed, not left over. Applies to every new screen and to any screen being reworked.
+
+- **Few containers, well filled.** Merge related blocks into one container with internal sections (divided by rules or a heading) instead of stacking 4–5 small cards. A detail screen aims for one main container and one side container.
+- **No container wider than its content.** A list whose rows only use the two ends (name on the left, icons on the right) must not span the full width: use a grid of cards (2–3 columns), add columns of real information, or narrow it.
+- **No card holding a single line.** An empty or one-line block ("No interviews scheduled") becomes a cell inside another container (a stat strip, a side section), never its own card.
+- **Fill with useful information.** Before leaving a gap, show data we already have: counts, best stage, dates ("updated 2 days ago"), phone, notes. Propose new elements freely; Alex discards what doesn't fit.
+- **Stat strips** sit at the top of the main container: 3–4 cells with a mono label and a value, divided by rules.
+- Check every screen at 1440 px wide in both themes before calling it done: no half-empty container, no orphan card.
+
 ## UI conventions
 
 - **Sentence case** everywhere ("Add company", not "Add Company"), except acronyms (STAR). Section labels in the sidebar style: small caps, 11 px, grey.
