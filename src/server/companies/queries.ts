@@ -1,7 +1,9 @@
 import "server-only";
 
+import { getLocale } from "next-intl/server";
 import { cache } from "react";
 
+import { isLocale } from "@/i18n/config";
 import { bestStage, latestDate, stageRank } from "@/lib/companies";
 import type { ApplicationStatus } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
@@ -32,7 +34,7 @@ export type CompanyListItem = Pick<
  */
 export async function listCompanies(): Promise<CompanyListItem[]> {
   const data = (await servePreviewData())
-    ? previewCompanies().map((c) => ({
+    ? (await previewForLocale()).map((c) => ({
         ...c,
         applications: c.applications.map((a) => ({
           status: a.status,
@@ -98,7 +100,7 @@ export type CompanyDetail = CompanyRow & {
 export const getCompany = cache(
   async (id: string): Promise<CompanyDetail | null> => {
     if (await servePreviewData()) {
-      return previewCompanies().find((c) => c.id === id) ?? null;
+      return (await previewForLocale()).find((c) => c.id === id) ?? null;
     }
     await requireUser();
     const supabase = await createClient();
@@ -114,3 +116,9 @@ export const getCompany = cache(
     return data;
   },
 );
+
+/** Preview sample data in the UI language. */
+async function previewForLocale() {
+  const locale = await getLocale();
+  return previewCompanies(isLocale(locale) ? locale : "en");
+}
