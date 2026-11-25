@@ -51,7 +51,12 @@ async function Contacts({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="grid gap-4">
-      <div className="flex justify-end">{addButton}</div>
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-sm text-muted-foreground">
+          {t("count", { count: company.contacts.length })}
+        </p>
+        {addButton}
+      </div>
       <ContactsList companyId={company.id} contacts={company.contacts} />
     </div>
   );

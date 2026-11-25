@@ -321,6 +321,11 @@
       "edit": "Edit",
       "delete": "Delete",
       "remind": "Remind",
+      "count": "{count, plural, one {# contact} other {# contacts}}",
+      "call": "Call {name}",
+      "noEmail": "No email",
+      "noPhone": "No phone",
+      "noLinkedin": "No LinkedIn",
       "form": {
         "createTitle": "Add contact",
         "editTitle": "Edit contact",
