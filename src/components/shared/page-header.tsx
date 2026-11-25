@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 
-/** Title row of every app screen, with optional description and actions on the right. */
+/**
+ * Top row of every app screen. The title is already shown in the top bar, so it
+ * stays only as the screen-reader h1; the description leads, actions on the right.
+ */
 export function PageHeader({
   title,
   description,
@@ -11,14 +14,18 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-      <div className="grid gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
-      </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
-    </div>
+    <>
+      <h1 className="sr-only">{title}</h1>
+      {(description || actions) && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          {description && (
+            <p className="text-base text-foreground">{description}</p>
+          )}
+          {actions && (
+            <div className="ml-auto flex items-center gap-2">{actions}</div>
+          )}
+        </div>
+      )}
+    </>
   );
 }
