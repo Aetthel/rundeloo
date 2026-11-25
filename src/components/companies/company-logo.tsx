@@ -4,6 +4,7 @@ import { initialsOf } from "@/lib/companies";
 import { cn } from "@/lib/utils";
 
 const SIZE = {
+  xs: { box: "size-5 rounded-md text-[0.5rem]", icon: 16 },
   sm: { box: "size-8 text-xs", icon: 24 },
   lg: { box: "size-14 text-lg", icon: 44 },
 } as const;

@@ -229,6 +229,35 @@
     "backHome": "Go to dashboard",
     "loading": "Loading…"
   },
+  "applications": {
+    "description": "Every application you're tracking, from saved to offer.",
+    "total": "{count, plural, one {# application} other {# applications}}",
+    "search": "Search role or company",
+    "searchLabel": "Search applications by role or company",
+    "filters": {
+      "company": "Company",
+      "allCompanies": "All companies",
+      "mode": "Work mode",
+      "allModes": "Any work mode",
+      "applied": "Date applied",
+      "anyDate": "Any date",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "older": "Over 30 days ago",
+      "clear": "Clear filters"
+    },
+    "board": {
+      "label": "Applications board",
+      "column": "{stage}, {count, plural, one {# application} other {# applications}}",
+      "showMore": "Show {count} more",
+      "showLess": "Show less",
+      "empty": "Nothing here yet",
+      "noResults": "No applications match these filters.",
+      "closes": "Closes {time}",
+      "job": "{role} job posting (opens in a new tab)",
+      "jobLinkedin": "{role} on LinkedIn (opens in a new tab)"
+    }
+  },
   "companies": {
     "list": {
       "description": "Every company you're applying to, with its contacts.",

@@ -503,7 +503,17 @@ const HOUR = 3_600_000;
 const sampleId = (group: number, n: number) =>
   `00000000-0000-4000-8000-${String(group * 100_000 + n).padStart(12, "0")}`;
 
-export function previewCompanies(locale: Locale): CompanyDetail[] {
+/** The company detail shape, with the application fields the board also needs. */
+export type PreviewCompany = Omit<CompanyDetail, "applications"> & {
+  applications: (CompanyDetail["applications"][number] & {
+    company_id: string;
+    work_mode: WorkMode | null;
+    applied_at: string | null;
+    deadline: string | null;
+  })[];
+};
+
+export function previewCompanies(locale: Locale): PreviewCompany[] {
   const pick = (text: Text) => (locale === "es" ? text[1] : text[0]);
   const ago = (hours: number) =>
     new Date(Date.now() - hours * HOUR).toISOString();
