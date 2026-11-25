@@ -6,12 +6,12 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 
 export type ActivityEvent = { id: string; text: string; when: string };
 
 /**
- * Recent activity of a company, newest first, 5 per page. Short pages are
+ * Recent activity of a company, newest first, 4 per page. Short pages are
  * padded with empty rows so the container keeps its height between pages.
  */
 export function ActivityList({
