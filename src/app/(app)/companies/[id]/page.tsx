@@ -1,18 +1,21 @@
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 
-import { SectionCard } from "@/components/shared/section-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { displayHost, initialsOf } from "@/lib/companies";
+import { bestStage, displayHost, initialsOf } from "@/lib/companies";
 import { PIPELINE_PRIORITY } from "@/lib/constants";
 import { loadCompanyOr404 } from "@/server/companies/load";
 
 const SIDE_CONTACTS = 3;
 
-/** Applications tab of a company (default tab): main column + About and Contacts on the side. */
+/**
+ * Applications tab of a company (default tab). Two containers only: the main
+ * one (stat strip + applications) and the side one (about, notes, contacts).
+ */
 export default function CompanyOverviewPage({
   params,
 }: PageProps<"/companies/[id]">) {
@@ -36,49 +39,83 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
     (a, b) =>
       PIPELINE_PRIORITY.indexOf(a.status) - PIPELINE_PRIORITY.indexOf(b.status),
   );
-  const empty = (text: string) => (
+  const best = bestStage(applications.map((a) => a.status));
+  const now = new Date();
+  const muted = (text: string) => (
     <p className="text-sm text-muted-foreground">{text}</p>
   );
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      <div className="grid gap-6">
-        <SectionCard title={t("applications")}>
-          {applications.length === 0 ? (
-            empty(t("applicationsEmpty"))
-          ) : (
-            <ul className="divide-y">
-              {applications.map((app) => (
-                <li
-                  key={app.id}
-                  className="flex items-center justify-between gap-3 py-2"
-                >
-                  <Link
-                    href={`/applications/${app.id}`}
-                    className="truncate font-medium underline-offset-4 hover:underline"
-                  >
-                    {app.role_title}
-                  </Link>
-                  <StatusBadge status={app.status} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </SectionCard>
-        <SectionCard title={t("nextInterview")}>
-          {empty(t("nextInterviewEmpty"))}
-        </SectionCard>
-        <SectionCard title={t("notes")}>
-          {company.notes ? (
-            <p className="text-sm whitespace-pre-wrap">{company.notes}</p>
-          ) : (
-            empty(t("notesEmpty"))
-          )}
-        </SectionCard>
-      </div>
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <section
+        aria-label={t("applications")}
+        className="overflow-hidden rounded-xl border surface"
+      >
+        <dl className="grid grid-cols-2 border-b sm:grid-cols-4">
+          <Stat label={t("applications")}>
+            <span className="font-mono">{applications.length}</span>
+          </Stat>
+          <Stat label={t("bestStage")}>
+            {best ? (
+              <StatusBadge status={best} className="text-sm" />
+            ) : (
+              <span className="text-muted-foreground">—</span>
+            )}
+          </Stat>
+          <Stat label={t("contacts")}>
+            <span className="font-mono">{company.contacts.length}</span>
+          </Stat>
+          <Stat label={t("nextInterview")}>
+            <span className="text-muted-foreground">{t("notScheduled")}</span>
+          </Stat>
+        </dl>
 
-      <aside className="grid gap-6 lg:sticky lg:top-20">
-        <SectionCard title={t("about")}>
+        <div className="p-4 pb-2">
+          <h2 className="text-sm font-medium">{t("applications")}</h2>
+        </div>
+        {applications.length === 0 ? (
+          <div className="px-4 pb-4">{muted(t("applicationsEmpty"))}</div>
+        ) : (
+          <ul className="divide-y border-t">
+            {applications.map((app) => (
+              <li key={app.id} className="relative">
+                <div className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-muted/50">
+                  <div className="grid min-w-0 flex-1 gap-0.5">
+                    {/* Stretched link: the whole row is clickable, reached once by keyboard. */}
+                    <Link
+                      href={`/applications/${app.id}`}
+                      className="truncate font-medium after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
+                    >
+                      {app.role_title}
+                    </Link>
+                    {app.status_changed_at && (
+                      <span className="text-xs text-muted-foreground">
+                        {t("updatedAgo", {
+                          time: format.relativeTime(
+                            new Date(app.status_changed_at),
+                            now,
+                          ),
+                        })}
+                      </span>
+                    )}
+                  </div>
+                  <StatusBadge status={app.status} />
+                  <ChevronRight
+                    className="size-4 text-muted-foreground"
+                    aria-hidden
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <aside
+        aria-label={t("summary")}
+        className="divide-y overflow-hidden rounded-xl border surface lg:sticky lg:top-20"
+      >
+        <SideSection title={t("about")}>
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
             {company.website && (
               <>
@@ -115,8 +152,17 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
               })}
             </dd>
           </dl>
-        </SectionCard>
-        <SectionCard
+        </SideSection>
+
+        <SideSection title={t("notes")}>
+          {company.notes ? (
+            <p className="text-sm whitespace-pre-wrap">{company.notes}</p>
+          ) : (
+            muted(t("notesEmpty"))
+          )}
+        </SideSection>
+
+        <SideSection
           title={t("contacts")}
           action={
             company.contacts.length > 0 && (
@@ -130,7 +176,7 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
           }
         >
           {company.contacts.length === 0 ? (
-            empty(t("contactsEmpty"))
+            muted(t("contactsEmpty"))
           ) : (
             <ul className="grid gap-3">
               {company.contacts.slice(0, SIDE_CONTACTS).map((contact) => (
@@ -154,20 +200,50 @@ async function Overview({ params }: { params: Promise<{ id: string }> }) {
               ))}
             </ul>
           )}
-        </SectionCard>
+        </SideSection>
       </aside>
     </div>
   );
 }
 
+/** One cell of the stat strip: mono label on top, value below. */
+function Stat({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="grid gap-1 px-4 py-3 odd:border-r sm:border-r sm:last:border-r-0 [&:nth-child(-n+2)]:border-b sm:[&:nth-child(-n+2)]:border-b-0">
+      <dt className="font-mono text-2xs tracking-wide text-muted-foreground uppercase">
+        {label}
+      </dt>
+      <dd className="text-lg font-medium">{children}</dd>
+    </div>
+  );
+}
+
+/** A section inside the side container, divided from the next by a rule. */
+function SideSection({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="grid gap-3 p-4">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-medium">{title}</h2>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
 function OverviewSkeleton() {
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-      <div className="grid gap-6">
-        <Skeleton className="h-40 rounded-xl" />
-        <Skeleton className="h-24 rounded-xl" />
-      </div>
-      <Skeleton className="h-56 rounded-xl" />
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <Skeleton className="h-64 rounded-xl" />
+      <Skeleton className="h-96 rounded-xl" />
     </div>
   );
 }
