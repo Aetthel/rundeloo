@@ -64,11 +64,11 @@ export function FormDialog({
         <DialogClose asChild>
           <Button
             variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4"
+            size="icon-lg"
+            className="absolute top-3.5 right-3.5"
             aria-label={t("close")}
           >
-            <XIcon aria-hidden />
+            <XIcon aria-hidden className="size-5" />
           </Button>
         </DialogClose>
         {open && children(() => setOpen(false))}
