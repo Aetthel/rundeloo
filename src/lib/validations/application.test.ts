@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { briefRoleTitle } from "@/lib/applications";
-import { roleTitleSchema } from "@/lib/validations/application";
+import {
+  applicationSchema,
+  roleTitleSchema,
+} from "@/lib/validations/application";
 
 describe("briefRoleTitle", () => {
   it.each([
@@ -44,5 +47,50 @@ describe("roleTitleSchema", () => {
     );
     expect(result.success).toBe(false);
     expect(result.error?.issues[0]?.message).toBe("roleTitleTooLong");
+  });
+});
+
+describe("applicationSchema", () => {
+  const valid = {
+    companyId: "00000000-0000-4000-8000-000000000001",
+    roleTitle: "Frontend Engineer, Growth",
+    status: "applied",
+    workMode: "remote",
+    appliedAt: "2026-11-20",
+    deadline: "",
+    jobUrl: "linkedin.com/jobs/view/123",
+  };
+
+  it("normalizes what the edit form sends", () => {
+    expect(applicationSchema.parse(valid)).toEqual({
+      companyId: valid.companyId,
+      roleTitle: "Frontend Engineer",
+      status: "applied",
+      workMode: "remote",
+      appliedAt: "2026-11-20",
+      deadline: null,
+      jobUrl: "https://linkedin.com/jobs/view/123",
+    });
+  });
+
+  it("turns the empty work mode and link into null", () => {
+    const result = applicationSchema.parse({
+      ...valid,
+      workMode: "none",
+      jobUrl: "",
+    });
+    expect(result.workMode).toBeNull();
+    expect(result.jobUrl).toBeNull();
+  });
+
+  it.each([
+    ["appliedAt", "2026-02-30", "invalidDate"],
+    ["deadline", "tomorrow", "invalidDate"],
+    ["jobUrl", "not a link", "invalidUrl"],
+    ["status", "hired", undefined],
+  ])("rejects %s = %s", (field, value, message) => {
+    const result = applicationSchema.safeParse({ ...valid, [field]: value });
+    expect(result.success).toBe(false);
+    if (message) expect(result.error?.issues[0]?.message).toBe(message);
   });
 });
