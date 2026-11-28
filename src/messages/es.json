@@ -265,6 +265,10 @@
         "cancelled": "Movimiento cancelado. {role} se queda donde estaba.",
         "failed": "No se ha podido mover {role}. Ha vuelto a su columna; inténtalo de nuevo."
       }
+    },
+    "errors": {
+      "roleTitleRequired": "Escribe el puesto.",
+      "roleTitleTooLong": "Déjalo breve, como \"Desarrollador frontend\"."
     }
   },
   "companies": {
