@@ -17,3 +17,50 @@ export function briefRoleTitle(raw: string): string {
   const tidy = raw.replace(/\s+/g, " ").trim();
   return tidy.replace(SUFFIX, "").trim() || tidy;
 }
+
+const DAY = 86_400_000;
+/** Days after applying with no news before a follow-up is due. */
+export const FOLLOW_UP_DAYS = 7;
+
+export type NextStep =
+  | { key: "send" }
+  | { key: "sendBy"; date: string }
+  | { key: "wait" }
+  | { key: "followUp" }
+  | { key: "prepare" }
+  | { key: "answer" }
+  | { key: "reconnect" };
+
+/**
+ * What to do next with an application, derived from its status and dates
+ * (table view, screen 09). Rejected applications have no next step.
+ */
+export function nextStepOf(
+  app: {
+    status: string;
+    appliedAt: string | null;
+    deadline: string | null;
+  },
+  now: Date,
+): NextStep | null {
+  switch (app.status) {
+    case "saved":
+      return app.deadline
+        ? { key: "sendBy", date: app.deadline }
+        : { key: "send" };
+    case "applied": {
+      const days = app.appliedAt
+        ? (now.getTime() - new Date(app.appliedAt).getTime()) / DAY
+        : 0;
+      return days >= FOLLOW_UP_DAYS ? { key: "followUp" } : { key: "wait" };
+    }
+    case "interview":
+      return { key: "prepare" };
+    case "offer":
+      return { key: "answer" };
+    case "on_hold":
+      return { key: "reconnect" };
+    default:
+      return null;
+  }
+}
