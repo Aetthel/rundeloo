@@ -248,10 +248,8 @@ export function ApplicationsView({
           </Button>
         )}
 
-        <p
-          className="ml-auto font-mono text-sm text-muted-foreground"
-          aria-live="polite"
-        >
+        {/* No visible total: screen readers still hear the count change. */}
+        <p role="status" className="sr-only">
           {t("total", { count: filtered.length })}
         </p>
       </div>
