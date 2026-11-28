@@ -562,7 +562,7 @@ function CardBody({ card, now, modeLabel }: CardProps) {
                 ? t("jobLinkedin", { role: card.roleTitle })
                 : t("job", { role: card.roleTitle })
             }
-            className="relative z-10 -m-1 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="relative z-10 -m-1 rounded-md p-1 text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground"
           >
             {isLinkedinUrl(card.jobUrl) ? (
               <LinkedinIcon className="size-3.5" />
