@@ -29,6 +29,7 @@ import {
   type WorkMode,
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import type { ApplicationInput } from "@/lib/validations/application";
 import { moveApplication } from "@/server/applications/actions";
 import type { ApplicationCard } from "@/server/applications/queries";
 
@@ -102,6 +103,33 @@ export function ApplicationsView({
     const byId = new Map(cards.map((c) => [c.company.id, c.company]));
     return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
   }, [cards]);
+
+  /** Applies a saved edit locally: the server already has it, or it's the preview. */
+  const applySaved = (id: string, saved: ApplicationInput) => {
+    const company = companies.find((c) => c.id === saved.companyId);
+    setItems((list) =>
+      list
+        .map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                roleTitle: saved.roleTitle,
+                status: saved.status,
+                statusChangedAt:
+                  saved.status === item.status ? item.statusChangedAt : nowIso,
+                workMode: saved.workMode,
+                appliedAt: saved.appliedAt,
+                deadline: saved.deadline,
+                jobUrl: saved.jobUrl,
+                company: company ?? item.company,
+              }
+            : item,
+        )
+        .sort(newestFirst),
+    );
+  };
+  const removeCard = (id: string) =>
+    setItems((list) => list.filter((item) => item.id !== id));
 
   // The status filter belongs to the table: on the board, columns are statuses.
   const statusFilter = view === "table" ? status : "all";
@@ -266,7 +294,13 @@ export function ApplicationsView({
       {view === "board" ? (
         <ApplicationsBoard cards={filtered} now={now} onMove={move} />
       ) : (
-        <ApplicationsTable cards={filtered} now={now} onMove={move} />
+        <ApplicationsTable
+          cards={filtered}
+          now={now}
+          companies={companies}
+          onSaved={applySaved}
+          onDeleted={removeCard}
+        />
       )}
     </div>
   );

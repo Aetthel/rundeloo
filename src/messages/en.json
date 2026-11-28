@@ -270,7 +270,14 @@
     },
     "errors": {
       "roleTitleRequired": "Write the role.",
-      "roleTitleTooLong": "Keep it short, like \"Frontend developer\"."
+      "roleTitleTooLong": "Keep it short, like \"Frontend developer\".",
+      "invalidDate": "Pick a valid date.",
+      "invalidUrl": "Write a valid link, like linkedin.com/jobs/view/123.",
+      "tooLong": "It's too long.",
+      "saveFailed": "We couldn't save it. Try again.",
+      "deleteFailed": "We couldn't delete it. Try again.",
+      "notFound": "This application no longer exists.",
+      "unexpected": "Something went wrong. Try again."
     },
     "view": {
       "label": "View",
@@ -314,13 +321,33 @@
         "prepare": "Prepare the interview",
         "answer": "Answer the offer",
         "reconnect": "Get back in touch"
-      },
-      "actions": {
-        "menu": "Actions for {role}",
-        "open": "Open application",
-        "job": "View job posting",
-        "moveTo": "Move to"
       }
+    },
+    "form": {
+      "editTitle": "Edit application",
+      "edit": "Edit {role}",
+      "role": "Role",
+      "roleHint": "Just the role, up to {max} characters: \"Frontend developer\".",
+      "rolePlaceholder": "Frontend developer",
+      "company": "Company",
+      "status": "Status",
+      "mode": "Work mode",
+      "noMode": "Not set",
+      "applied": "Date applied",
+      "deadline": "Deadline",
+      "jobUrl": "Job posting link",
+      "jobUrlPlaceholder": "linkedin.com/jobs/view/…",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel"
+    },
+    "delete": {
+      "button": "Delete {role}",
+      "title": "Delete {role} at {company}?",
+      "body": "Its status history goes with it. This can't be undone.",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "cancel": "Cancel"
     }
   },
   "companies": {

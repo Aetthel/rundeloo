@@ -270,7 +270,14 @@
     },
     "errors": {
       "roleTitleRequired": "Escribe el puesto.",
-      "roleTitleTooLong": "Déjalo breve, como \"Desarrollador frontend\"."
+      "roleTitleTooLong": "Déjalo breve, como \"Desarrollador frontend\".",
+      "invalidDate": "Elige una fecha válida.",
+      "invalidUrl": "Escribe un enlace válido, como linkedin.com/jobs/view/123.",
+      "tooLong": "Es demasiado largo.",
+      "saveFailed": "No hemos podido guardarlo. Inténtalo de nuevo.",
+      "deleteFailed": "No hemos podido borrarla. Inténtalo de nuevo.",
+      "notFound": "Esta candidatura ya no existe.",
+      "unexpected": "Algo ha fallado. Inténtalo de nuevo."
     },
     "view": {
       "label": "Vista",
@@ -314,13 +321,33 @@
         "prepare": "Preparar la entrevista",
         "answer": "Responder a la oferta",
         "reconnect": "Retomar el contacto"
-      },
-      "actions": {
-        "menu": "Acciones de {role}",
-        "open": "Ver candidatura",
-        "job": "Ver oferta",
-        "moveTo": "Mover a"
       }
+    },
+    "form": {
+      "editTitle": "Editar candidatura",
+      "edit": "Editar {role}",
+      "role": "Puesto",
+      "roleHint": "Solo el puesto, hasta {max} caracteres: \"Desarrollador frontend\".",
+      "rolePlaceholder": "Desarrollador frontend",
+      "company": "Empresa",
+      "status": "Estado",
+      "mode": "Modalidad",
+      "noMode": "Sin indicar",
+      "applied": "Fecha de envío",
+      "deadline": "Fecha de cierre",
+      "jobUrl": "Enlace a la oferta",
+      "jobUrlPlaceholder": "linkedin.com/jobs/view/…",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "cancel": "Cancelar"
+    },
+    "delete": {
+      "button": "Borrar {role}",
+      "title": "¿Borrar {role} en {company}?",
+      "body": "También se borra su historial de estados. No se puede deshacer.",
+      "confirm": "Borrar",
+      "deleting": "Borrando…",
+      "cancel": "Cancelar"
     }
   },
   "companies": {
