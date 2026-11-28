@@ -6,36 +6,24 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsUpDown,
-  ExternalLink,
-  MoreHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import {
-  DOT_CLASS,
   daysUntil,
   MENU,
   newestFirst,
   URGENT_DAYS,
 } from "@/components/applications/shared";
+import {
+  ApplicationRowActions,
+  type CompanyOption,
+} from "@/components/applications/application-row-actions";
 import { CompanyLogo } from "@/components/companies/company-logo";
-import { isLinkedinUrl, LinkedinIcon } from "@/components/shared/linkedin-icon";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -52,12 +40,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { nextStepOf } from "@/lib/applications";
-import {
-  type ApplicationStatus,
-  PIPELINE_FUNNEL,
-  PIPELINE_PRIORITY,
-} from "@/lib/constants";
+import { PIPELINE_PRIORITY } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import type { ApplicationInput } from "@/lib/validations/application";
 import type { ApplicationCard } from "@/server/applications/queries";
 
 const PAGE_SIZE = 12;
@@ -121,17 +106,21 @@ function sortCards(cards: ApplicationCard[], key: SortKey, dir: Direction) {
 
 /**
  * Table view (screen 09): sortable headers and a Sort control that agree,
- * 12 rows per page, a derived "Next step" and a row menu to open the
- * application or the posting and to move it to another status.
+ * 12 rows per page, a derived "Next step", and pencil and trash buttons to
+ * edit or delete each application.
  */
 export function ApplicationsTable({
   cards,
   now,
-  onMove,
+  companies,
+  onSaved,
+  onDeleted,
 }: {
   cards: ApplicationCard[];
   now: Date;
-  onMove: (id: string, status: ApplicationStatus) => void;
+  companies: CompanyOption[];
+  onSaved: (id: string, saved: ApplicationInput) => void;
+  onDeleted: (id: string) => void;
 }) {
   const t = useTranslations("applications.table");
   const tMode = useTranslations("enums.workMode");
@@ -307,7 +296,7 @@ export function ApplicationsTable({
             <TableHead className="hidden lg:table-cell">
               {t("columns.nextStep")}
             </TableHead>
-            <TableHead className="w-12 pr-4">
+            <TableHead className="w-20 pr-4">
               <span className="sr-only">{t("columns.actions")}</span>
             </TableHead>
           </TableRow>
@@ -374,7 +363,12 @@ export function ApplicationsTable({
                   )}
                 </TableCell>
                 <TableCell className="pr-4 text-right">
-                  <RowMenu card={card} onMove={onMove} />
+                  <ApplicationRowActions
+                    card={card}
+                    companies={companies}
+                    onSaved={onSaved}
+                    onDeleted={onDeleted}
+                  />
                 </TableCell>
               </TableRow>
             );
@@ -382,71 +376,5 @@ export function ApplicationsTable({
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-function RowMenu({
-  card,
-  onMove,
-}: {
-  card: ApplicationCard;
-  onMove: (id: string, status: ApplicationStatus) => void;
-}) {
-  const t = useTranslations("applications.table.actions");
-  const tStatus = useTranslations("enums.applicationStatus");
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        {/* Above the stretched link, so it opens the menu, not the application. */}
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="relative z-10 text-muted-foreground hover:bg-foreground/10"
-          aria-label={t("menu", { role: card.roleTitle })}
-        >
-          <MoreHorizontal aria-hidden />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-52">
-        <DropdownMenuItem asChild>
-          <Link href={`/applications/${card.id}`}>{t("open")}</Link>
-        </DropdownMenuItem>
-        {card.jobUrl && (
-          <DropdownMenuItem asChild>
-            <a href={card.jobUrl} target="_blank" rel="noopener noreferrer">
-              {isLinkedinUrl(card.jobUrl) ? (
-                <LinkedinIcon className="size-4" />
-              ) : (
-                <ExternalLink aria-hidden />
-              )}
-              {t("job")}
-            </a>
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>{t("moveTo")}</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup
-              value={card.status}
-              onValueChange={(value) =>
-                onMove(card.id, value as ApplicationStatus)
-              }
-            >
-              {PIPELINE_FUNNEL.map((status) => (
-                <DropdownMenuRadioItem key={status} value={status}>
-                  <span
-                    className={cn("size-2 rounded-full", DOT_CLASS[status])}
-                    aria-hidden
-                  />
-                  {tStatus(status)}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 }

@@ -3,7 +3,8 @@
 import { useTranslations } from "next-intl";
 
 /** Namespaces that hold the error keys returned by Server Actions; each has "unexpected". */
-type ErrorNamespace = "auth.errors" | "companies.errors";
+type ErrorNamespace =
+  "auth.errors" | "companies.errors" | "applications.errors";
 
 /** Turns an error key from a Server Action into text. Unknown keys fall back to "unexpected". */
 export function useErrorText(namespace: ErrorNamespace = "auth.errors") {
