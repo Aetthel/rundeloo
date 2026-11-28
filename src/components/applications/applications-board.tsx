@@ -577,7 +577,9 @@ function CardBody({ card, now, modeLabel }: CardProps) {
       <Link
         href={`/applications/${card.id}`}
         draggable={false}
-        className="line-clamp-2 text-sm leading-snug font-medium after:absolute after:inset-0 after:rounded-lg focus-visible:outline-none focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
+        // One line per field: the full title shows on hover.
+        title={card.roleTitle}
+        className="truncate text-sm leading-snug font-medium after:absolute after:inset-0 after:rounded-lg focus-visible:outline-none focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
       >
         {card.roleTitle}
       </Link>
@@ -586,7 +588,10 @@ function CardBody({ card, now, modeLabel }: CardProps) {
         <span className="truncate">{modeLabel ?? "—"}</span>
         {card.statusChangedAt && (
           <span className="shrink-0">
-            {format.relativeTime(new Date(card.statusChangedAt), now)}
+            {format.relativeTime(new Date(card.statusChangedAt), {
+              now,
+              style: "short",
+            })}
           </span>
         )}
       </div>
@@ -594,16 +599,22 @@ function CardBody({ card, now, modeLabel }: CardProps) {
       {deadline && daysLeft !== null && daysLeft >= 0 && (
         <p
           className={cn(
-            "flex items-center gap-1.5 text-xs",
+            "flex min-w-0 items-center gap-1.5 text-xs whitespace-nowrap",
             daysLeft <= URGENT_DAYS
               ? "text-destructive"
               : "text-muted-foreground",
           )}
         >
-          <CalendarClock className="size-3.5" aria-hidden />
-          {t("closes", {
-            time: format.relativeTime(deadline, { now, unit: "day" }),
-          })}
+          <CalendarClock className="size-3.5 shrink-0" aria-hidden />
+          <span className="truncate">
+            {t("closes", {
+              time: format.relativeTime(deadline, {
+                now,
+                unit: "day",
+                style: "short",
+              }),
+            })}
+          </span>
         </p>
       )}
     </>
