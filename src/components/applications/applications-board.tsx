@@ -1,9 +1,34 @@
 "use client";
 
+import {
+  type Announcements,
+  DndContext,
+  type DragEndEvent,
+  DragOverlay,
+  type DragStartEvent,
+  KeyboardCode,
+  type KeyboardCoordinateGetter,
+  KeyboardSensor,
+  PointerSensor,
+  rectIntersection,
+  TouchSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import { CalendarClock, ExternalLink, Search } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { useDeferredValue, useMemo, useState } from "react";
+import {
+  useDeferredValue,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 
 import { CompanyLogo } from "@/components/companies/company-logo";
 import { isLinkedinUrl, LinkedinIcon } from "@/components/shared/linkedin-icon";
@@ -22,6 +47,7 @@ import {
   type WorkMode,
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { moveApplication } from "@/server/applications/actions";
 import type { ApplicationCard } from "@/server/applications/queries";
 
 const COLUMN_CAP = 5;
@@ -46,10 +72,15 @@ const DOT_CLASS: Record<ApplicationStatus, string> = {
   rejected: "bg-status-rejected",
 };
 
+const newestFirst = (a: ApplicationCard, b: ApplicationCard) =>
+  (b.statusChangedAt ?? "").localeCompare(a.statusChangedAt ?? "");
+
 /**
  * Applications board (screen 08): filters on top, six columns in funnel
  * order, 5 cards per column and "Show N more". `now` comes from the server so
- * relative dates render the same on both sides.
+ * relative dates render the same on both sides. Cards drag between columns
+ * (mouse, touch or keyboard) to change their status: the move shows at once
+ * and rolls back if the server refuses it.
  */
 export function ApplicationsBoard({
   cards,
@@ -70,12 +101,91 @@ export function ApplicationsBoard({
   const [expanded, setExpanded] = useState<Set<ApplicationStatus>>(new Set());
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
 
+  // Local copy so a drop shows at once; a fresh list from the server replaces it.
+  const [items, setItems] = useState(cards);
+  const [sourceCards, setSourceCards] = useState(cards);
+  if (cards !== sourceCards) {
+    setSourceCards(cards);
+    setItems(cards);
+  }
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [moveError, setMoveError] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  // Stable id: dnd-kit numbers its aria ids otherwise, which breaks hydration.
+  const dndId = useId();
+  const active = items.find((card) => card.id === activeId) ?? null;
+
+  const sensors = useSensors(
+    // A short move starts a drag, so a plain click still opens the card.
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 6 },
+    }),
+    useSensor(KeyboardSensor, { coordinateGetter: jumpBetweenColumns }),
+  );
+
+  const roleOf = (id: unknown) =>
+    items.find((card) => card.id === id)?.roleTitle ?? "";
+  const stageOf = (id: unknown) =>
+    PIPELINE_FUNNEL.includes(id as ApplicationStatus)
+      ? tStatus(id as ApplicationStatus)
+      : "";
+  const announcements: Announcements = {
+    onDragStart: ({ active }) =>
+      t("board.drag.picked", { role: roleOf(active.id) }),
+    onDragOver: ({ active, over }) =>
+      t("board.drag.over", {
+        role: roleOf(active.id),
+        stage: stageOf(over?.id),
+      }),
+    onDragEnd: ({ active, over }) =>
+      over
+        ? t("board.drag.dropped", {
+            role: roleOf(active.id),
+            stage: stageOf(over.id),
+          })
+        : t("board.drag.cancelled", { role: roleOf(active.id) }),
+    onDragCancel: ({ active }) =>
+      t("board.drag.cancelled", { role: roleOf(active.id) }),
+  };
+
+  const onDragStart = ({ active }: DragStartEvent) => {
+    setActiveId(String(active.id));
+    setMoveError(null);
+  };
+
+  const onDragEnd = ({ active, over }: DragEndEvent) => {
+    setActiveId(null);
+    const card = items.find((item) => item.id === active.id);
+    const status = over?.id as ApplicationStatus | undefined;
+    if (!card || !status || status === card.status) return;
+
+    const previous = items;
+    // Newest change first, so the moved card lands on top of its column.
+    setItems(
+      items
+        .map((item) =>
+          item.id === card.id
+            ? { ...item, status, statusChangedAt: nowIso }
+            : item,
+        )
+        .sort(newestFirst),
+    );
+    startTransition(async () => {
+      const result = await moveApplication(card.id, status);
+      if (!result.ok) {
+        setItems(previous);
+        setMoveError(t("board.drag.failed", { role: card.roleTitle }));
+      }
+    });
+  };
+
   const companies = useMemo(() => {
     const byId = new Map(cards.map((c) => [c.company.id, c.company]));
     return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
   }, [cards]);
 
-  const filtered = cards.filter((card) => {
+  const filtered = items.filter((card) => {
     if (
       deferredQuery &&
       !card.roleTitle.toLowerCase().includes(deferredQuery) &&
@@ -198,97 +308,226 @@ export function ApplicationsBoard({
       {filtering && filtered.length === 0 && (
         <p className="text-sm text-muted-foreground">{t("board.noResults")}</p>
       )}
+      {moveError && (
+        <p role="alert" className="text-sm text-destructive">
+          {moveError}
+        </p>
+      )}
 
-      <div
-        role="region"
-        aria-label={t("board.label")}
-        // Six columns fit from xl up; below that the board scrolls sideways.
-        className="grid auto-cols-[minmax(15rem,1fr)] grid-flow-col items-start gap-3 overflow-x-auto pb-2 xl:auto-cols-auto xl:grid-flow-row xl:grid-cols-6 xl:overflow-visible"
+      <DndContext
+        id={dndId}
+        sensors={sensors}
+        collisionDetection={rectIntersection}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragCancel={() => setActiveId(null)}
+        accessibility={{
+          announcements,
+          screenReaderInstructions: { draggable: t("board.drag.instructions") },
+        }}
       >
-        {PIPELINE_FUNNEL.map((status) => {
-          const column = filtered.filter((card) => card.status === status);
-          const open = expanded.has(status);
-          const shown = open ? column : column.slice(0, COLUMN_CAP);
-          const hidden = column.length - COLUMN_CAP;
-          const label = tStatus(status);
+        <div
+          role="region"
+          aria-label={t("board.label")}
+          // Six columns fit from xl up; below that the board scrolls sideways.
+          className="grid auto-cols-[minmax(15rem,1fr)] grid-flow-col gap-3 overflow-x-auto pb-2 xl:auto-cols-auto xl:grid-flow-row xl:grid-cols-6 xl:overflow-visible"
+        >
+          {PIPELINE_FUNNEL.map((status) => {
+            const column = filtered.filter((card) => card.status === status);
+            const open = expanded.has(status);
+            return (
+              <Column
+                key={status}
+                status={status}
+                label={tStatus(status)}
+                cards={open ? column : column.slice(0, COLUMN_CAP)}
+                total={column.length}
+                open={open}
+                now={now}
+                modeLabel={(value) => (value ? tMode(value) : null)}
+                onToggle={() =>
+                  setExpanded((prev) => {
+                    const next = new Set(prev);
+                    if (open) next.delete(status);
+                    else next.add(status);
+                    return next;
+                  })
+                }
+              />
+            );
+          })}
+        </div>
 
-          return (
-            <section
-              key={status}
-              aria-label={t("board.column", {
-                stage: label,
-                count: column.length,
-              })}
-              className={cn(
-                "grid min-w-0 gap-2",
-                DIMMED.includes(status) && "opacity-70",
-              )}
-            >
-              <h2 className="flex h-7 items-center gap-2 px-1 text-sm font-medium">
-                <span
-                  className={cn("size-2 rounded-full", DOT_CLASS[status])}
-                  aria-hidden
-                />
-                <span className="truncate">{label}</span>
-                <span className="font-mono text-xs text-muted-foreground">
-                  {column.length}
-                </span>
-              </h2>
-
-              {column.length === 0 ? (
-                <p className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-muted-foreground">
-                  {t("board.empty")}
-                </p>
-              ) : (
-                <ul className="grid gap-2">
-                  {shown.map((card) => (
-                    <BoardCard
-                      key={card.id}
-                      card={card}
-                      now={now}
-                      modeLabel={card.workMode ? tMode(card.workMode) : null}
-                    />
-                  ))}
-                </ul>
-              )}
-
-              {hidden > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="justify-start text-muted-foreground"
-                  aria-expanded={open}
-                  onClick={() =>
-                    setExpanded((prev) => {
-                      const next = new Set(prev);
-                      if (open) next.delete(status);
-                      else next.add(status);
-                      return next;
-                    })
-                  }
-                >
-                  {open
-                    ? t("board.showLess")
-                    : t("board.showMore", { count: hidden })}
-                </Button>
-              )}
-            </section>
-          );
-        })}
-      </div>
+        <DragOverlay dropAnimation={null}>
+          {active && (
+            <div className="relative grid rotate-2 cursor-grabbing gap-2 rounded-lg border surface p-3 shadow-lg">
+              <CardBody
+                card={active}
+                now={now}
+                modeLabel={active.workMode ? tMode(active.workMode) : null}
+              />
+            </div>
+          )}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 }
 
-function BoardCard({
-  card,
+/** Left and right arrows move a picked-up card one column over. */
+const jumpBetweenColumns: KeyboardCoordinateGetter = (
+  event,
+  { context: { active, over, droppableRects, collisionRect } },
+) => {
+  const step =
+    event.code === KeyboardCode.Right
+      ? 1
+      : event.code === KeyboardCode.Left
+        ? -1
+        : 0;
+  if (!step || !collisionRect) return undefined;
+  event.preventDefault();
+
+  const current = (over?.id ?? active?.data.current?.status) as
+    ApplicationStatus | undefined;
+  const index = current ? PIPELINE_FUNNEL.indexOf(current) : -1;
+  const next = PIPELINE_FUNNEL[index + step];
+  const target = next ? droppableRects.get(next) : undefined;
+  if (!target) return undefined;
+  return {
+    x: target.left + (target.width - collisionRect.width) / 2,
+    y: target.top + 36,
+  };
+};
+
+function Column({
+  status,
+  label,
+  cards,
+  total,
+  open,
   now,
   modeLabel,
+  onToggle,
 }: {
+  status: ApplicationStatus;
+  label: string;
+  cards: ApplicationCard[];
+  total: number;
+  open: boolean;
+  now: Date;
+  modeLabel: (mode: WorkMode | null) => string | null;
+  onToggle: () => void;
+}) {
+  const t = useTranslations("applications.board");
+  const { setNodeRef, isOver } = useDroppable({ id: status });
+  const hidden = total - COLUMN_CAP;
+
+  return (
+    <section
+      ref={setNodeRef}
+      aria-label={t("column", { stage: label, count: total })}
+      className={cn(
+        // Stretches to the row height, so the whole column takes a drop.
+        "-m-1 grid min-w-0 content-start gap-2 rounded-xl p-1 transition-colors",
+        DIMMED.includes(status) && !isOver && "opacity-70",
+        isOver && "bg-foreground/5 ring-1 ring-foreground/15",
+      )}
+    >
+      <h2 className="flex h-7 items-center gap-2 px-1 text-sm font-medium">
+        <span
+          className={cn("size-2 rounded-full", DOT_CLASS[status])}
+          aria-hidden
+        />
+        <span className="truncate">{label}</span>
+        <span className="font-mono text-xs text-muted-foreground">{total}</span>
+      </h2>
+
+      {total === 0 ? (
+        <p className="rounded-lg border border-dashed px-3 py-6 text-center text-xs text-muted-foreground">
+          {t("empty")}
+        </p>
+      ) : (
+        <ul className="grid gap-2">
+          {cards.map((card) => (
+            <BoardCard
+              key={card.id}
+              card={card}
+              now={now}
+              modeLabel={modeLabel(card.workMode)}
+            />
+          ))}
+        </ul>
+      )}
+
+      {hidden > 0 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="justify-start text-muted-foreground"
+          aria-expanded={open}
+          onClick={onToggle}
+        >
+          {open ? t("showLess") : t("showMore", { count: hidden })}
+        </Button>
+      )}
+    </section>
+  );
+}
+
+type CardProps = {
   card: ApplicationCard;
   now: Date;
   modeLabel: string | null;
-}) {
+};
+
+function BoardCard(props: CardProps) {
+  const t = useTranslations("applications.board");
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: props.card.id,
+    data: { status: props.card.status },
+    attributes: { role: "listitem", roleDescription: t("drag.role") },
+  });
+
+  // The click that ends a drag must not open the application.
+  const dragged = useRef(false);
+  useEffect(() => {
+    if (isDragging) {
+      dragged.current = true;
+      return;
+    }
+    const timer = setTimeout(() => {
+      dragged.current = false;
+    });
+    return () => clearTimeout(timer);
+  }, [isDragging]);
+
+  return (
+    <li
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      // Only the card itself picks up on Space or Enter: its links keep opening.
+      onKeyDown={(event) => {
+        if (event.target === event.currentTarget) listeners?.onKeyDown(event);
+      }}
+      onClickCapture={(event) => {
+        if (dragged.current) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }}
+      className={cn(
+        "relative isolate grid cursor-grab touch-manipulation gap-2 rounded-lg border surface p-3 transition-colors outline-none hover:border-foreground/25 focus-visible:ring-3 focus-visible:ring-ring/50",
+        isDragging && "opacity-40",
+      )}
+    >
+      <CardBody {...props} />
+    </li>
+  );
+}
+
+function CardBody({ card, now, modeLabel }: CardProps) {
   const t = useTranslations("applications.board");
   const format = useFormatter();
 
@@ -302,7 +541,7 @@ function BoardCard({
     : null;
 
   return (
-    <li className="relative isolate grid gap-2 rounded-lg border surface p-3 transition-colors hover:border-foreground/25">
+    <>
       <div className="flex min-w-0 items-center gap-2">
         <CompanyLogo
           name={card.company.name}
@@ -337,6 +576,7 @@ function BoardCard({
       {/* Stretched link: the whole card opens the application. */}
       <Link
         href={`/applications/${card.id}`}
+        draggable={false}
         className="line-clamp-2 text-sm leading-snug font-medium after:absolute after:inset-0 after:rounded-lg focus-visible:outline-none focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
       >
         {card.roleTitle}
@@ -366,6 +606,6 @@ function BoardCard({
           })}
         </p>
       )}
-    </li>
+    </>
   );
 }

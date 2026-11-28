@@ -255,7 +255,16 @@
       "noResults": "No applications match these filters.",
       "closes": "Closes {time}",
       "job": "{role} job posting (opens in a new tab)",
-      "jobLinkedin": "{role} on LinkedIn (opens in a new tab)"
+      "jobLinkedin": "{role} on LinkedIn (opens in a new tab)",
+      "drag": {
+        "role": "draggable card",
+        "instructions": "To move an application, press Space or Enter, use the left and right arrows to pick a column, then press Space or Enter again to drop it. Press Escape to cancel.",
+        "picked": "Picked up {role}.",
+        "over": "{role} is over {stage}.",
+        "dropped": "{role} moved to {stage}.",
+        "cancelled": "Move cancelled. {role} stays where it was.",
+        "failed": "Could not move {role}. It is back in its column; try again."
+      }
     }
   },
   "companies": {

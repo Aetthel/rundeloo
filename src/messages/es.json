@@ -255,7 +255,16 @@
       "noResults": "Ninguna candidatura coincide con estos filtros.",
       "closes": "Cierra {time}",
       "job": "Oferta de {role} (se abre en una pestaña nueva)",
-      "jobLinkedin": "{role} en LinkedIn (se abre en una pestaña nueva)"
+      "jobLinkedin": "{role} en LinkedIn (se abre en una pestaña nueva)",
+      "drag": {
+        "role": "tarjeta arrastrable",
+        "instructions": "Para mover una candidatura, pulsa Espacio o Intro, elige columna con las flechas izquierda y derecha y vuelve a pulsar Espacio o Intro para soltarla. Escape cancela.",
+        "picked": "Has cogido {role}.",
+        "over": "{role} está sobre {stage}.",
+        "dropped": "{role} movida a {stage}.",
+        "cancelled": "Movimiento cancelado. {role} se queda donde estaba.",
+        "failed": "No se ha podido mover {role}. Ha vuelto a su columna; inténtalo de nuevo."
+      }
     }
   },
   "companies": {
