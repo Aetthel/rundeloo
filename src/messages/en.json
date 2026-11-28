@@ -265,6 +265,10 @@
         "cancelled": "Move cancelled. {role} stays where it was.",
         "failed": "Could not move {role}. It is back in its column; try again."
       }
+    },
+    "errors": {
+      "roleTitleRequired": "Write the role.",
+      "roleTitleTooLong": "Keep it short, like \"Frontend developer\"."
     }
   },
   "companies": {
