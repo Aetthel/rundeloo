@@ -17,103 +17,53 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { CalendarClock, ExternalLink, Search } from "lucide-react";
+import { CalendarClock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import {
-  useDeferredValue,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
+import {
+  DOT_CLASS,
+  daysUntil,
+  URGENT_DAYS,
+} from "@/components/applications/shared";
 import { CompanyLogo } from "@/components/companies/company-logo";
 import { isLinkedinUrl, LinkedinIcon } from "@/components/shared/linkedin-icon";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   type ApplicationStatus,
   PIPELINE_FUNNEL,
   type WorkMode,
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { moveApplication } from "@/server/applications/actions";
 import type { ApplicationCard } from "@/server/applications/queries";
 
 const COLUMN_CAP = 5;
 const DIMMED: readonly ApplicationStatus[] = ["on_hold", "rejected"];
-const WORK_MODES: readonly WorkMode[] = ["remote", "hybrid", "onsite"];
-const DAY = 86_400_000;
-/** Deadlines this close are highlighted. */
-const URGENT_DAYS = 3;
-
-// Drop-down menus open below the trigger and scroll past ~8 options.
-const MENU = { position: "popper", className: "max-h-72" } as const;
-
-type AppliedRange = "any" | "last7" | "last30" | "older";
-
-// Full class names so Tailwind can see them.
-const DOT_CLASS: Record<ApplicationStatus, string> = {
-  saved: "bg-status-saved",
-  applied: "bg-status-applied",
-  interview: "bg-status-interview",
-  offer: "bg-status-offer",
-  on_hold: "bg-status-on-hold",
-  rejected: "bg-status-rejected",
-};
-
-const newestFirst = (a: ApplicationCard, b: ApplicationCard) =>
-  (b.statusChangedAt ?? "").localeCompare(a.statusChangedAt ?? "");
 
 /**
- * Applications board (screen 08): filters on top, six columns in funnel
- * order, 5 cards per column and "Show N more". `now` comes from the server so
- * relative dates render the same on both sides. Cards drag between columns
- * (mouse, touch or keyboard) to change their status: the move shows at once
- * and rolls back if the server refuses it.
+ * Board view (screen 08): six columns in funnel order, 5 cards per column and
+ * "Show N more". Cards drag between columns (mouse, touch or keyboard) to
+ * change their status through `onMove`.
  */
 export function ApplicationsBoard({
   cards,
-  now: nowIso,
+  now,
+  onMove,
 }: {
   cards: ApplicationCard[];
-  now: string;
+  now: Date;
+  onMove: (id: string, status: ApplicationStatus) => void;
 }) {
   const t = useTranslations("applications");
   const tStatus = useTranslations("enums.applicationStatus");
   const tMode = useTranslations("enums.workMode");
-  const now = useMemo(() => new Date(nowIso), [nowIso]);
 
-  const [query, setQuery] = useState("");
-  const [companyId, setCompanyId] = useState("all");
-  const [mode, setMode] = useState<WorkMode | "all">("all");
-  const [applied, setApplied] = useState<AppliedRange>("any");
   const [expanded, setExpanded] = useState<Set<ApplicationStatus>>(new Set());
-  const deferredQuery = useDeferredValue(query.trim().toLowerCase());
-
-  // Local copy so a drop shows at once; a fresh list from the server replaces it.
-  const [items, setItems] = useState(cards);
-  const [sourceCards, setSourceCards] = useState(cards);
-  if (cards !== sourceCards) {
-    setSourceCards(cards);
-    setItems(cards);
-  }
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [moveError, setMoveError] = useState<string | null>(null);
-  const [, startTransition] = useTransition();
   // Stable id: dnd-kit numbers its aria ids otherwise, which breaks hydration.
   const dndId = useId();
-  const active = items.find((card) => card.id === activeId) ?? null;
+  const active = cards.find((card) => card.id === activeId) ?? null;
 
   const sensors = useSensors(
     // A short move starts a drag, so a plain click still opens the card.
@@ -125,7 +75,7 @@ export function ApplicationsBoard({
   );
 
   const roleOf = (id: unknown) =>
-    items.find((card) => card.id === id)?.roleTitle ?? "";
+    cards.find((card) => card.id === id)?.roleTitle ?? "";
   const stageOf = (id: unknown) =>
     PIPELINE_FUNNEL.includes(id as ApplicationStatus)
       ? tStatus(id as ApplicationStatus)
@@ -149,228 +99,70 @@ export function ApplicationsBoard({
       t("board.drag.cancelled", { role: roleOf(active.id) }),
   };
 
-  const onDragStart = ({ active }: DragStartEvent) => {
-    setActiveId(String(active.id));
-    setMoveError(null);
-  };
-
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveId(null);
-    const card = items.find((item) => item.id === active.id);
-    const status = over?.id as ApplicationStatus | undefined;
-    if (!card || !status || status === card.status) return;
-
-    const previous = items;
-    // Newest change first, so the moved card lands on top of its column.
-    setItems(
-      items
-        .map((item) =>
-          item.id === card.id
-            ? { ...item, status, statusChangedAt: nowIso }
-            : item,
-        )
-        .sort(newestFirst),
-    );
-    startTransition(async () => {
-      const result = await moveApplication(card.id, status);
-      if (!result.ok) {
-        setItems(previous);
-        setMoveError(t("board.drag.failed", { role: card.roleTitle }));
-      }
-    });
-  };
-
-  const companies = useMemo(() => {
-    const byId = new Map(cards.map((c) => [c.company.id, c.company]));
-    return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
-  }, [cards]);
-
-  const filtered = items.filter((card) => {
-    if (
-      deferredQuery &&
-      !card.roleTitle.toLowerCase().includes(deferredQuery) &&
-      !card.company.name.toLowerCase().includes(deferredQuery)
-    ) {
-      return false;
-    }
-    if (companyId !== "all" && card.company.id !== companyId) return false;
-    if (mode !== "all" && card.workMode !== mode) return false;
-    if (applied !== "any") {
-      if (!card.appliedAt) return false;
-      const days = (now.getTime() - new Date(card.appliedAt).getTime()) / DAY;
-      if (applied === "last7" && days > 7) return false;
-      if (applied === "last30" && days > 30) return false;
-      if (applied === "older" && days <= 30) return false;
-    }
-    return true;
-  });
-  const filtering =
-    deferredQuery !== "" ||
-    companyId !== "all" ||
-    mode !== "all" ||
-    applied !== "any";
-
-  const clearFilters = () => {
-    setQuery("");
-    setCompanyId("all");
-    setMode("all");
-    setApplied("any");
+    if (over) onMove(String(active.id), over.id as ApplicationStatus);
   };
 
   return (
-    <div className="grid gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative w-full sm:w-64">
-          <Search
-            className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-          <Input
-            type="search"
-            autoComplete="off"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("search")}
-            aria-label={t("searchLabel")}
-            className="surface pl-8"
-          />
-        </div>
-        <Select value={companyId} onValueChange={setCompanyId}>
-          <SelectTrigger
-            className="w-44 surface"
-            aria-label={t("filters.company")}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent {...MENU}>
-            <SelectItem value="all">{t("filters.allCompanies")}</SelectItem>
-            {companies.map((company) => (
-              <SelectItem key={company.id} value={company.id}>
-                <CompanyLogo
-                  name={company.name}
-                  logo={company.logo}
-                  size="xs"
-                />
-                <span className="truncate">{company.name}</span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={mode}
-          onValueChange={(value) => setMode(value as WorkMode | "all")}
-        >
-          <SelectTrigger
-            className="w-44 surface"
-            aria-label={t("filters.mode")}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent {...MENU}>
-            <SelectItem value="all">{t("filters.allModes")}</SelectItem>
-            {WORK_MODES.map((value) => (
-              <SelectItem key={value} value={value}>
-                {tMode(value)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={applied}
-          onValueChange={(value) => setApplied(value as AppliedRange)}
-        >
-          <SelectTrigger
-            className="w-44 surface"
-            aria-label={t("filters.applied")}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent {...MENU}>
-            <SelectItem value="any">{t("filters.anyDate")}</SelectItem>
-            <SelectItem value="last7">{t("filters.last7")}</SelectItem>
-            <SelectItem value="last30">{t("filters.last30")}</SelectItem>
-            <SelectItem value="older">{t("filters.older")}</SelectItem>
-          </SelectContent>
-        </Select>
-        {filtering && (
-          <Button variant="ghost" size="sm" onClick={clearFilters}>
-            {t("filters.clear")}
-          </Button>
-        )}
-        <p
-          className="ml-auto font-mono text-sm text-muted-foreground"
-          aria-live="polite"
-        >
-          {t("total", { count: filtered.length })}
-        </p>
+    <DndContext
+      id={dndId}
+      sensors={sensors}
+      collisionDetection={rectIntersection}
+      onDragStart={({ active }: DragStartEvent) =>
+        setActiveId(String(active.id))
+      }
+      onDragEnd={onDragEnd}
+      onDragCancel={() => setActiveId(null)}
+      accessibility={{
+        announcements,
+        screenReaderInstructions: { draggable: t("board.drag.instructions") },
+      }}
+    >
+      <div
+        role="region"
+        aria-label={t("board.label")}
+        // Six columns fit from xl up; below that the board scrolls sideways.
+        className="grid auto-cols-[minmax(15rem,1fr)] grid-flow-col gap-3 overflow-x-auto pb-2 xl:auto-cols-auto xl:grid-flow-row xl:grid-cols-6 xl:overflow-visible"
+      >
+        {PIPELINE_FUNNEL.map((status) => {
+          const column = cards.filter((card) => card.status === status);
+          const open = expanded.has(status);
+          return (
+            <Column
+              key={status}
+              status={status}
+              label={tStatus(status)}
+              cards={open ? column : column.slice(0, COLUMN_CAP)}
+              total={column.length}
+              open={open}
+              now={now}
+              modeLabel={(value) => (value ? tMode(value) : null)}
+              onToggle={() =>
+                setExpanded((prev) => {
+                  const next = new Set(prev);
+                  if (open) next.delete(status);
+                  else next.add(status);
+                  return next;
+                })
+              }
+            />
+          );
+        })}
       </div>
 
-      {filtering && filtered.length === 0 && (
-        <p className="text-sm text-muted-foreground">{t("board.noResults")}</p>
-      )}
-      {moveError && (
-        <p role="alert" className="text-sm text-destructive">
-          {moveError}
-        </p>
-      )}
-
-      <DndContext
-        id={dndId}
-        sensors={sensors}
-        collisionDetection={rectIntersection}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-        onDragCancel={() => setActiveId(null)}
-        accessibility={{
-          announcements,
-          screenReaderInstructions: { draggable: t("board.drag.instructions") },
-        }}
-      >
-        <div
-          role="region"
-          aria-label={t("board.label")}
-          // Six columns fit from xl up; below that the board scrolls sideways.
-          className="grid auto-cols-[minmax(15rem,1fr)] grid-flow-col gap-3 overflow-x-auto pb-2 xl:auto-cols-auto xl:grid-flow-row xl:grid-cols-6 xl:overflow-visible"
-        >
-          {PIPELINE_FUNNEL.map((status) => {
-            const column = filtered.filter((card) => card.status === status);
-            const open = expanded.has(status);
-            return (
-              <Column
-                key={status}
-                status={status}
-                label={tStatus(status)}
-                cards={open ? column : column.slice(0, COLUMN_CAP)}
-                total={column.length}
-                open={open}
-                now={now}
-                modeLabel={(value) => (value ? tMode(value) : null)}
-                onToggle={() =>
-                  setExpanded((prev) => {
-                    const next = new Set(prev);
-                    if (open) next.delete(status);
-                    else next.add(status);
-                    return next;
-                  })
-                }
-              />
-            );
-          })}
-        </div>
-
-        <DragOverlay dropAnimation={null}>
-          {active && (
-            <div className="relative grid rotate-2 cursor-grabbing gap-2 rounded-lg border surface p-3 shadow-lg">
-              <CardBody
-                card={active}
-                now={now}
-                modeLabel={active.workMode ? tMode(active.workMode) : null}
-              />
-            </div>
-          )}
-        </DragOverlay>
-      </DndContext>
-    </div>
+      <DragOverlay dropAnimation={null}>
+        {active && (
+          <div className="relative grid rotate-2 cursor-grabbing gap-2 rounded-lg border surface p-3 shadow-lg">
+            <CardBody
+              card={active}
+              now={now}
+              modeLabel={active.workMode ? tMode(active.workMode) : null}
+            />
+          </div>
+        )}
+      </DragOverlay>
+    </DndContext>
   );
 }
 
@@ -532,13 +324,10 @@ function CardBody({ card, now, modeLabel }: CardProps) {
   const format = useFormatter();
 
   // Deadline tag only while the application is still open.
+  const open = card.status === "saved" || card.status === "applied";
+  const daysLeft = open ? daysUntil(card.deadline, now) : null;
   const deadline =
-    card.deadline && (card.status === "saved" || card.status === "applied")
-      ? new Date(`${card.deadline}T23:59:59`)
-      : null;
-  const daysLeft = deadline
-    ? Math.ceil((deadline.getTime() - now.getTime()) / DAY)
-    : null;
+    daysLeft !== null ? new Date(`${card.deadline}T23:59:59`) : null;
 
   return (
     <>
