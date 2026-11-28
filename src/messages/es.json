@@ -244,7 +244,9 @@
       "last7": "Últimos 7 días",
       "last30": "Últimos 30 días",
       "older": "Hace más de 30 días",
-      "clear": "Quitar filtros"
+      "clear": "Quitar filtros",
+      "status": "Estado",
+      "allStatuses": "Cualquier estado"
     },
     "board": {
       "label": "Tablero de candidaturas",
@@ -269,6 +271,56 @@
     "errors": {
       "roleTitleRequired": "Escribe el puesto.",
       "roleTitleTooLong": "Déjalo breve, como \"Desarrollador frontend\"."
+    },
+    "view": {
+      "label": "Vista",
+      "board": "Tablero",
+      "table": "Tabla"
+    },
+    "table": {
+      "label": "Tabla de candidaturas",
+      "noData": "Sin datos",
+      "columns": {
+        "company": "Empresa",
+        "role": "Puesto",
+        "status": "Estado",
+        "mode": "Modalidad",
+        "applied": "Enviada",
+        "deadline": "Cierre",
+        "nextStep": "Siguiente paso",
+        "actions": "Acciones"
+      },
+      "sort": {
+        "label": "Ordenar por",
+        "pipeline": "Etapa del proceso",
+        "recent": "Último cambio",
+        "company": "Empresa",
+        "role": "Puesto",
+        "mode": "Modalidad",
+        "applied": "Fecha de envío",
+        "deadline": "Fecha de cierre",
+        "ascending": "Orden ascendente",
+        "descending": "Orden descendente"
+      },
+      "range": "{from}–{to} de {total}",
+      "page": "Página {page} de {total}",
+      "previous": "Página anterior",
+      "next": "Página siguiente",
+      "nextStep": {
+        "send": "Enviar la candidatura",
+        "sendBy": "Enviar antes del {date}",
+        "wait": "Esperar respuesta",
+        "followUp": "Hacer seguimiento",
+        "prepare": "Preparar la entrevista",
+        "answer": "Responder a la oferta",
+        "reconnect": "Retomar el contacto"
+      },
+      "actions": {
+        "menu": "Acciones de {role}",
+        "open": "Ver candidatura",
+        "job": "Ver oferta",
+        "moveTo": "Mover a"
+      }
     }
   },
   "companies": {

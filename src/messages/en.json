@@ -244,7 +244,9 @@
       "last7": "Last 7 days",
       "last30": "Last 30 days",
       "older": "Over 30 days ago",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "status": "Status",
+      "allStatuses": "Any status"
     },
     "board": {
       "label": "Applications board",
@@ -269,6 +271,56 @@
     "errors": {
       "roleTitleRequired": "Write the role.",
       "roleTitleTooLong": "Keep it short, like \"Frontend developer\"."
+    },
+    "view": {
+      "label": "View",
+      "board": "Board",
+      "table": "Table"
+    },
+    "table": {
+      "label": "Applications table",
+      "noData": "No data",
+      "columns": {
+        "company": "Company",
+        "role": "Role",
+        "status": "Status",
+        "mode": "Work mode",
+        "applied": "Applied",
+        "deadline": "Deadline",
+        "nextStep": "Next step",
+        "actions": "Actions"
+      },
+      "sort": {
+        "label": "Sort by",
+        "pipeline": "Pipeline stage",
+        "recent": "Latest change",
+        "company": "Company",
+        "role": "Role",
+        "mode": "Work mode",
+        "applied": "Date applied",
+        "deadline": "Deadline",
+        "ascending": "Ascending order",
+        "descending": "Descending order"
+      },
+      "range": "{from}–{to} of {total}",
+      "page": "Page {page} of {total}",
+      "previous": "Previous page",
+      "next": "Next page",
+      "nextStep": {
+        "send": "Send the application",
+        "sendBy": "Send by {date}",
+        "wait": "Wait for an answer",
+        "followUp": "Follow up",
+        "prepare": "Prepare the interview",
+        "answer": "Answer the offer",
+        "reconnect": "Get back in touch"
+      },
+      "actions": {
+        "menu": "Actions for {role}",
+        "open": "Open application",
+        "job": "View job posting",
+        "moveTo": "Move to"
+      }
     }
   },
   "companies": {
