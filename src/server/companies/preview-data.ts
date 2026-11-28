@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { Locale } from "@/i18n/config";
+import { briefRoleTitle } from "@/lib/applications";
 import type { ApplicationStatus, ContactRole, WorkMode } from "@/lib/constants";
 import type { CompanyDetail } from "@/server/companies/queries";
 
@@ -53,11 +54,7 @@ const SAMPLE: SampleCompany[] = [
     addedDaysAgo: 13,
     applications: [
       [["Frontend Developer", "Desarrollador frontend"], "interview", 48],
-      [
-        ["Junior Full-stack Engineer", "Ingeniero full-stack junior"],
-        "applied",
-        96,
-      ],
+      [["Full-stack Engineer", "Ingeniero full-stack"], "applied", 96],
     ],
     contacts: [
       {
@@ -168,11 +165,7 @@ const SAMPLE: SampleCompany[] = [
     addedDaysAgo: 18,
     applications: [
       [["Frontend Engineer", "Ingeniero frontend"], "interview", 6],
-      [
-        ["React Native Developer", "Desarrollador React Native"],
-        "on_hold",
-        200,
-      ],
+      [["Mobile Developer", "Desarrollador móvil"], "on_hold", 200],
     ],
     contacts: [
       {
@@ -252,12 +245,7 @@ const SAMPLE: SampleCompany[] = [
         "interview",
         26,
       ],
-      [
-        ["Junior Web Developer", "Desarrollador web junior"],
-        "rejected",
-        400,
-        null,
-      ],
+      [["Web Developer", "Desarrollador web"], "rejected", 400, null],
       [
         ["Frontend Engineer, Partners", "Ingeniero frontend, Partners"],
         "applied",
@@ -337,9 +325,7 @@ const SAMPLE: SampleCompany[] = [
     industry: ["HR software", "Software de RR. HH."],
     location: ["On-site · Barcelona", "Presencial · Barcelona"],
     addedDaysAgo: 4,
-    applications: [
-      [["Junior Frontend Engineer", "Ingeniero frontend junior"], "saved", 50],
-    ],
+    applications: [[["Frontend Engineer", "Ingeniero frontend"], "saved", 50]],
     contacts: [],
   },
   {
@@ -378,7 +364,7 @@ const SAMPLE: SampleCompany[] = [
     addedDaysAgo: 5,
     applications: [
       [["Frontend Engineer", "Ingeniero frontend"], "applied", 40],
-      [["Web Platform Engineer", "Ingeniero de plataforma web"], "saved", 15],
+      [["Web Engineer", "Ingeniero web"], "saved", 15],
     ],
     contacts: [
       {
@@ -428,11 +414,7 @@ const SAMPLE: SampleCompany[] = [
     location: ["On-site · Barcelona", "Presencial · Barcelona"],
     addedDaysAgo: 3,
     applications: [
-      [
-        ["Junior Software Engineer", "Ingeniero de software junior"],
-        "applied",
-        55,
-      ],
+      [["Software Engineer", "Ingeniero de software"], "applied", 55],
       [["Frontend Engineer", "Ingeniero frontend"], "saved", 8],
     ],
     contacts: [],
@@ -475,14 +457,7 @@ const SAMPLE: SampleCompany[] = [
         "applied",
         22,
       ],
-      [
-        [
-          "Developer Experience Engineer",
-          "Ingeniero de experiencia de desarrollo",
-        ],
-        "saved",
-        33,
-      ],
+      [["DX Engineer", "Ingeniero de DX"], "saved", 33],
     ],
     contacts: [],
   },
@@ -532,7 +507,8 @@ export function previewCompanies(locale: Locale): PreviewCompany[] {
         return {
           id: sampleId(1, n),
           company_id: id,
-          role_title: pick(role),
+          // Same rule as the forms: the role itself, short enough for one line.
+          role_title: briefRoleTitle(pick(role)),
           status,
           status_changed_at: ago(hours),
           job_url:
