@@ -77,6 +77,8 @@ Space is designed, not left over. Applies to every new screen and to any screen 
 - UI copy in English first, translated through `messages/`.
 - Pro items are visible but locked for free users; clicking opens the paywall.
 - Lists that can grow show a cap and an expander: Kanban 5 cards per column + "Show N more"; calendar 3 events per day + "+N more"; Activity 5–6 events + "View all".
+- **Cards never wrap.** Every field of a board card sits on one line (truncated with the full text on hover), and relative dates use the short style ("2 d", "3 sem.").
+- **Brief role titles** (2026-11-28, Alex's rule): an application stores the role itself, "Frontend developer", not the posting's headline. Forms run the title through `briefRoleTitle` (drops ", Growth", "(Remote)", " - Billing"…) and cap it at 32 characters, so it fits a card without being cut.
 - Columns in detail pages are top-aligned; the side column is sticky.
 - Dates follow the user's locale, including the calendar's first day of the week.
 - Empty, loading, error and 404 states are designed for every screen, following the existing patterns.
